@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900&display=swap');
+
+section{
+  width: 100%;
+  height: 120vh;
+  background: linear-gradient(90deg, #ccac7c 0%, #edebc8 15%, #edebc8 25%, #d4e6b8 38%, #d4e6b8 50%, #d4e6b8 62%, #c4dfa5 75%, #a6d589 85%, #edebc8 100%);;
+  background-size: 400% 400%;
+  position: relative;
+  animation: animate 7.5s ease-in-out infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.div_main{
+    background-color: whitesmoke;
+}
+@keyframes animate{
+  0%{
+    background-position: 0 50%;
+  }
+  50%{
+    background-position: 100% 50%;
+  }
+  100%{
+    background-position: 0 50%;
+  }
+}
+
+
+.div_main_login {
+    margin-top: 5%;
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+  
+.form-signin {
+    width: 100%;
+    max-width: 400px;
+    padding: 50px;
+    margin: auto;
+}
+
+.form-signin .checkbox {
+    font-weight: 400;   
+}
+
+.form-signin .form-floating:focus-within {
+z-index: 2;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+

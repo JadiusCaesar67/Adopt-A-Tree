@@ -1,0 +1,44 @@
+body {
+  /* background-image: url("css/A-Salinggogon-tree-stands-out-in-the-middle-of-the-forest.jpg"); */
+  /* height: 100vh;  */
+  /* background-size: cover; */
+  /* background-position: center; */
+}
+
+.App-logo {
+  /* height: 40vmin; */
+  pointer-events: none;
+  /* background-image: url(./assets/adopt-a-tree-logo-img.png); */
+}
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.main {
+  background-image: url(css/Forest_1.jfif);
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+} */
+/* .login_background {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+} */
+
+/* Pop-up Div Main */
+
+
