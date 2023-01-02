@@ -3,3 +3,4 @@ pool.js
 /node_modules
 test.js
 index_test.js
+.env
