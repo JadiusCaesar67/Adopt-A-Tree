@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+/src/setupTests.js
+/src/App.test.js
+/src/pages/home/test.html
 
 # production
 /build
