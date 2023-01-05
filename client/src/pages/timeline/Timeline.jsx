@@ -107,13 +107,14 @@ const Timeline = ({ id }) => {
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            getPosts();
-        }, 1000);
-    return () => clearInterval(interval);
+    //     const interval = setInterval(() => {
+    //         getPosts();
+    //     }, 1000);
+    // return () => clearInterval(interval);
         getPosts();
     }, [])
-    // console.log(posts)
+    console.log(posts)
+    console.log(inputs)
     return(
         <>
         {/* <div>{!isAuth? <Navigate to='/login'/> : null }</div> */}
@@ -153,7 +154,6 @@ const Timeline = ({ id }) => {
                 </div>
                 <div className="form-floating mb-4">
                     <input
-                            
                         type="text"
                         id="postContent"
                         name="tree_descr"

@@ -18,9 +18,9 @@ const Profile = () => {
                     }
                 }
             )
-            console.log(response)
             const parseRes = await response.json()
             setUser(parseRes)
+            console.log(parseRes)
         }
 
         catch (error) {

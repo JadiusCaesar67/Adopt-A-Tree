@@ -12,7 +12,7 @@ const UploadAvatar = () => {
         try {
             let imageFile = new FormData()
             imageFile.append('avatar', image)
-            // console.log(image)
+            console.log(imageFile)
             const newImage = await fetch(
                 `http://localhost:8000/photos/avatar`, 
             {
@@ -23,8 +23,8 @@ const UploadAvatar = () => {
                 body: imageFile
             })
             
-            // const parseRes = await newImage.json()
-            // console.log(parseRes)
+            const parseRes = await newImage.json()
+            console.log(parseRes)
             window.location.reload(false)
         } catch (error) {
             console.log(error.message)

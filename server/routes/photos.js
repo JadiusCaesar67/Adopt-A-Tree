@@ -12,7 +12,7 @@ router.post('/avatar', auth, upload.single("avatar"), async (req, res) => {
     try {
         const id = req.user.id
         const { filename } = req.file
-        // console.log(filename);
+        console.log(filename);
 
         //checks if id exists already
         const image = await pool.query(`SELECT * FROM avatars WHERE id = '${id}'`)
@@ -38,6 +38,13 @@ router.post('/avatar', auth, upload.single("avatar"), async (req, res) => {
             console.log("Updated Avatar")
         }
         
+        else {
+            await pool.query(`
+            INSERT INTO avatars (id, avatar) VALUES
+            ( '${id}', '${filename}') RETURNING * `)
+            console.log("First avatar upload success")
+            res.send(`Avatar '${filename}' upload success`)
+        }
         
     } catch (error) {
         console.error(error.message)
