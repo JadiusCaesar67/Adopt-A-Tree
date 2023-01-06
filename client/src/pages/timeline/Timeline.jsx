@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Posts from "../../components/Posts";
+import PostPage from "../../components/PostPage";
+// import Posts from "../../components/Posts";
 import { toast } from 'react-toastify';
+import Pagination from "../../components/Pagination";
 
 const Timeline = ({ id }) => {
     // console.log(id)
@@ -13,6 +15,9 @@ const Timeline = ({ id }) => {
     })
     const [image, setImage] = useState({})
     const [imageDiscard, setImageDiscard] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [postsPerPage] = useState(5)
     // console.log(image)
     // console.log((inputs.tree_name && inputs.tree_descr && inputs.note) === "" && (Object.keys(image).length === 0 && image.constructor === Object))
     //setting the inputs
@@ -89,6 +94,7 @@ const Timeline = ({ id }) => {
 
     const getPosts = async () => {
         try {
+            setLoading(true)
             //fetch api that uses the GET method
             const response = await fetch(
                 "http://localhost:8000/posts",
@@ -100,11 +106,19 @@ const Timeline = ({ id }) => {
             //parsing the json back to a JS object
             const parseRes = await response.json();
             setPosts(parseRes);
-
+            setLoading(false);
         } catch (error) {
             console.log(error.message)
         }
     }
+
+    // Get current posts
+    const indexOfLastPost = currentPage * postsPerPage
+    const indexOfFirstPost = indexOfLastPost - postsPerPage
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
+
+    // Change page
+    const paginate = pageNumber => setCurrentPage(pageNumber)   
 
     useEffect(() => {
     //     const interval = setInterval(() => {
@@ -115,6 +129,7 @@ const Timeline = ({ id }) => {
     }, [])
     console.log(posts)
     console.log(inputs)
+
     return(
         <>
         {/* <div>{!isAuth? <Navigate to='/login'/> : null }</div> */}
@@ -219,15 +234,22 @@ const Timeline = ({ id }) => {
         </div>
             </div>
 
-            
             <div className="my-3 p-3 bg-body rounded shadow-sm">
             <h6 className="border-bottom pb-2 mb-0">Recent updates</h6>
-            {posts.map ( (post, index) => (
+            <PostPage posts={currentPosts} loading={loading} own_id={id}/>
+            <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={posts.length}
+                paginate={paginate}
+            />
+            
+            {/* {posts.map ( (post, index) => (
                 <div key={index} className="card my-3 p-3 bg-body rounded shadow-sm">
-                    <Posts posts={post} own_id={id}/>
+                    <Posts post={post} own_id={id} posts={currentPosts} />
                 </div>
-            ))}
+            ))} */}
             </div>
+            
             </main>
         </>
     )

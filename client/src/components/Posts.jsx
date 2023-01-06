@@ -145,12 +145,12 @@ const Posts = ({ posts, own_id }) => {
         }
         </div>
 
-        <strong className="d-block text-gray-dark">{posts.username}</strong>
+        <strong className="d-block text-gray-dark fw-bold">{posts.username}</strong>
         <div className="pb-3 mb-0 small lh-sm border-bottom">
-        <dd className="card-text">{posts.post_description}</dd>
-        <div className="d-flex flex-row mb-3 bg-body rounded shadow-sm">
+        <dd className="card-text fs-4">{posts.post_description}</dd>
+        <div className="row mb-3 bg-body rounded shadow-sm">
             {posts.pictures.map ( (pics, post) => (
-                <div key={post} className=" my-3 p-3 bg-body rounded shadow-sm">
+                <div key={post} className="col my-2 p-2 bg-body rounded shadow-sm">
                     <img src={`http://localhost:8000/img/${pics}`} width="240px" height="240px" alt=""/>
                 </div>
             ))}

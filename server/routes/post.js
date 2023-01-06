@@ -7,7 +7,7 @@ import { upload } from "../middleware/upload.js";
 const router = express.Router();
 const  pool = connectDatabase()
 
-router.post('/', auth, upload.array("photos", 3), async (req, res) => {
+router.post('/', auth, upload.array("photos", 8), async (req, res) => {
     console.log(req.body)
     try {
         const user_id = req.user.id
@@ -97,10 +97,20 @@ router.delete('/delete', auth, async (req, res) => {
     try {
         const post_id = req.query.post_id
         console.log(post_id)
+        const pg_photos = await pool.query(`SELECT pictures FROM posts WHERE post_id = '${post_id}'`)
+        const photos = pg_photos.rows[0].pictures
+        for (var i = 0; i < photos.length; i++) {
+            console.log(photos[i])
+            if (existsSync(`./public/images/${photos[i]}`)) {
+                unlinkSync(`./public/images/${photos[i]}`);
+                console.log(photos[i], "REMOVED");
+            }
+        }
+        
         const delete_post = await pool.query(`
         DELETE FROM posts WHERE '${post_id}' = post_id RETURNING *`)
-        res.json(delete_post.rows)
-        console.log(delete_post.rows)
+        res.json(delete_post.rows[0])
+        console.log(delete_post.rows[0])
     } catch (error) {
         console.log(error.message)
     }

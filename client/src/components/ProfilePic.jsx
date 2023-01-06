@@ -27,9 +27,7 @@ const ProfilePic = () => {
     }, [])
 
     return (
-        <div>
-            <img src={profilePic} className="img-thumbnail" alt="..."></img>
-        </div>
+            <img src={profilePic} className="img-fluid img-thumbnail" alt="Profile Picture"></img>
     )
 }
 
