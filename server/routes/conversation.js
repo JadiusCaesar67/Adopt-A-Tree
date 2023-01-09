@@ -6,9 +6,6 @@ const  pool = connectDatabase()
 //new conv
 
 router.post("/", async (req, res) => {
-//   const newConversation = new Conversation({
-//     members: [req.body.senderId, req.body.receiverId],
-//   });
     const  {senderId, receiverId}  = req.body
     // console.log(req.body)
     try {  

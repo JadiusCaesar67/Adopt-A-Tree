@@ -27,7 +27,8 @@ const ProfilePic = () => {
     }, [])
 
     return (
-            <img src={profilePic} className="img-fluid img-thumbnail" alt="Profile Picture"></img>
+            // <img src={profilePic} className="img-fluid img-thumbnail" alt="Profile Picture"></img>
+            <img src={profilePic} className="object-fit-fill rounded-circle" style={{ width: 18 + 'rem', height: 18 + 'rem' }} alt="Profile Picture"></img>
     )
 }
 

@@ -18,7 +18,7 @@ import Login from './components/authentication/Login';
 import Profile from './pages/profile/Profile';
 import Messenger from "./pages/messenger/Messenger";
 import Timeline from "./pages/timeline/Timeline";
-import Headers from "./components/Headers";
+import Headers from "./components/headings/Headers";
 
 function App() {
   const [ isAuthenticated, setIsAuthenticated ] = useState(false)
@@ -98,7 +98,7 @@ function App() {
               <Navigate to='/login'/>
             ) }></Route> */}
             <Route exact path="/messenger" element={<Messenger/>} />
-            <Route exact path='/profile' element={<Profile isAuth={isAuthenticated}/>} />
+            <Route exact path='/profile' element={<Profile />} />
             <Route path="*" element={<Test />} />
           </Routes>
         </div>

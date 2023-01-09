@@ -116,4 +116,22 @@ router.delete('/delete', auth, async (req, res) => {
     }
 })
 
+router.get('/own-posts', auth, async (req, res) => {
+    try {
+        const user_id = req.user.id
+        console.log(user_id)
+        const posts = await pool.query(`
+        SELECT * FROM posts 
+        WHERE user_id = '${user_id}' 
+        ORDER BY date_posted DESC`)
+        // const ids = posts.rows.map((obj) => obj);
+        // console.log(ids.date_posted)
+        // console.log(typeof(ids.date_posted))
+        res.json(posts.rows)
+
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
 export default router

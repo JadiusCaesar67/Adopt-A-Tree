@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from "../assets/adopt-a-tree-logo-img.png"
+import Logo from "../../assets/adopt-a-tree-logo-img.png"
 import AvatarHeaders from "./AvatarHeaders";
 const Headers = ({ isAuth, setAuth }) => {
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import PostPage from "../../components/PostPage";
+import PostPage from "../../components/posts/PostPage";
 // import Posts from "../../components/Posts";
 import { toast } from 'react-toastify';
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/posts/Pagination";
 
 const Timeline = ({ id }) => {
     // console.log(id)
