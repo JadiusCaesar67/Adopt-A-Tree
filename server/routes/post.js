@@ -124,9 +124,6 @@ router.get('/own-posts', auth, async (req, res) => {
         SELECT * FROM posts 
         WHERE user_id = '${user_id}' 
         ORDER BY date_posted DESC`)
-        // const ids = posts.rows.map((obj) => obj);
-        // console.log(ids.date_posted)
-        // console.log(typeof(ids.date_posted))
         res.json(posts.rows)
 
     } catch (error) {

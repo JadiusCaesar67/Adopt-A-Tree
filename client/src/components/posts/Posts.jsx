@@ -9,6 +9,7 @@ const Posts = ({ posts, own_id }) => {
     const [available, setAvailable] = useState(posts.available)
     const [availableButton, setAvailableButton] = useState(posts.available)
     const friendId = posts.user_id
+
     const getAvatar = async () => {
         try {
             const response = await fetch(
@@ -24,6 +25,28 @@ const Posts = ({ posts, own_id }) => {
         }
     }
     
+    const onClickMessage = async () => {
+        try {
+            const senderId = own_id
+            const receiverId = friendId
+            const body = { senderId, receiverId }
+            const response = await fetch(
+                "http://localhost:8000/conversations/",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-type" : "application/json"
+                    },
+                    body: JSON.stringify(body)
+                })
+            const parseRes = await response.json()
+            console.log(parseRes)
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
     const onClickAvailable = () => {
         console.log(posts.post_id)
         setLoading(true)
@@ -35,6 +58,7 @@ const Posts = ({ posts, own_id }) => {
         setLoading(true)
         console.log(posts.post_id)
     }
+
     //Availability
     useEffect(() => {
         const setOwnAvailability = async () => {
@@ -109,7 +133,8 @@ const Posts = ({ posts, own_id }) => {
         <>
         <div className="card-body">
         <div className="modal-header">
-        <img src={profilePic? profilePic : "https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g"} alt="" className="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" focusable="false"/>
+        <img src={profilePic? profilePic : "https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g"} 
+            alt="" className="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" focusable="false"/>
         {
             own_id? ( ownId === posts.user_id?
             (loading? <div className="spinner-border text-success" role="status">
@@ -144,7 +169,7 @@ const Posts = ({ posts, own_id }) => {
             
         }
         </div>
-
+        <button type="button" className="btn btn-info mt-2" onClick={onClickMessage}>Message</button>
         <strong className="d-block text-gray-dark fw-bold">{posts.username}</strong>
         <div className="pb-3 mb-0 small lh-sm border-bottom">
         <dd className="card-text fs-4">{posts.post_description}</dd>
@@ -156,9 +181,7 @@ const Posts = ({ posts, own_id }) => {
             ))}
         </div>
         <li>{posts.user_type}</li>
-        {/* <p>{hour + posts.date_posted.substring(13, 16)} {meridiem} {posts.date_posted.substring(0, 10)} </p> */}
-        <p>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</p>
-        {/* <p>{date}</p> */}
+        <time>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</time>
         </div>
         </div>
         </>

@@ -127,15 +127,12 @@ const Timeline = ({ id }) => {
     // return () => clearInterval(interval);
         getPosts();
     }, [])
-    console.log(posts)
-    console.log(inputs)
 
     return(
         <>
-        {/* <div>{!isAuth? <Navigate to='/login'/> : null }</div> */}
         <main className="container">
         <div className="my-3 p-3 bg-body rounded shadow-sm">
-            <Link className="a" to="/messenger">Messenger</Link>
+            {/* <Link className="a" to="/messenger">Messenger</Link> */}
         <h1>Posts</h1>
         <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
         Post Something

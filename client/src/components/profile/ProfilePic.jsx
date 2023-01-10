@@ -28,7 +28,18 @@ const ProfilePic = () => {
 
     return (
             // <img src={profilePic} className="img-fluid img-thumbnail" alt="Profile Picture"></img>
-            <img src={profilePic} className="object-fit-fill rounded-circle" style={{ width: 18 + 'rem', height: 18 + 'rem' }} alt="Profile Picture"></img>
+            <>
+            {
+                profilePic? 
+                <img src={profilePic} className="object-fit-fill rounded-circle" 
+                style={{ width: 18 + 'rem', height: 18 + 'rem' }} alt="..."></img>
+                :
+                <svg className="object-fit-fill rounded-circle" width="18em" height="18em" xmlns="http://www.w3.org/2000/svg" 
+                role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <rect width="18em" height="18em" fill="#868e96"></rect>
+                </svg>
+            }
+            </>
     )
 }
 

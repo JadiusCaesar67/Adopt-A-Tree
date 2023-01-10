@@ -36,7 +36,7 @@ export default function Message({ message, own }) {
         : 
         (<div className="messageTop"><p className="messageText">{message.text}</p></div>)
         }
-      <div className="messageBottom">{format(message.createdat)}</div>
+      <div className="messageBottom">{format(message.created_at)}</div>
     </div>
   );
 }

@@ -7,11 +7,11 @@ const  pool = connectDatabase()
 
 router.post("/", async (req, res) => {
     const  {senderId, receiverId}  = req.body
-    // console.log(req.body)
+    console.log(req.body)
     try {  
     const newConversation = await pool.query(`
-    INSERT INTO conversations (members, createdAt)
-    VALUES (ARRAY ['${senderId}', '${receiverId}'], CURRENT_TIMESTAMP) RETURNING *
+    INSERT INTO conversations (members, created_at, updated_at)
+    VALUES (ARRAY ['${senderId}', '${receiverId}'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *
     `);
     // console.log(newConversation.rows)
     // const savedConversation = await newConversation.save();

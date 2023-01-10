@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import UploadAvatar from "../../components/profile/UploadAvatar"
 import ProfilePic from "../../components/profile/ProfilePic"
 import "./profile.css"
+import OwnPosts from "../../components/profile/OwnPosts"
 
 const Profile = () => {
     const [ user, setUser ] = useState("")
@@ -21,7 +22,6 @@ const Profile = () => {
             )
             const parseRes = await response.json()
             setUser(parseRes)
-            console.log(parseRes)
         }
 
         catch (error) {
@@ -54,12 +54,6 @@ const Profile = () => {
         getOwnPosts()
     }, [])
 
-    const d = new Date(posts.date_posted)
-    const date = d.toString();
-    const hours = date.substring(16, 18)
-    const meridiem = hours >= 12 ? 'PM' : 'AM'
-    const hour = (hours % 12) || 12
-    console.log(posts)
     return (
         <>
             <header className="masthead col bg-primary text-white">
@@ -67,9 +61,7 @@ const Profile = () => {
             <div className="container col ms-5">
                 {/* <!-- Masthead Avatar Image--> */}
                 <div className="card rounded-circle" style={{ width: 18 + 'rem', height: 18 + 'rem' }}>
-                <picture>
-                    <ProfilePic getId = {user.id}/>
-                </picture>
+                    <ProfilePic/>
                 </div>
                 <UploadAvatar getId = {user.id}/>
                 {/* <!-- Masthead Heading--> */}
@@ -88,34 +80,39 @@ const Profile = () => {
                 <h2 className="page-section-heading text-center text-uppercase text-white">Posts</h2>
                 <div className="card">
                     <div className="card-body">
-                {
-                    posts? (posts.map ( (posts, index) => (
-                            <div key={index} className="card my-3 p-3 bg-body rounded shadow-sm">
-                            <div className="pb-3 mb-0 small lh-sm border-bottom">
-                                <dd className="card-text fs-4">{posts.post_description}</dd>
-                                <div className="row mb-3 bg-body rounded shadow-sm">
-                                    {posts.pictures.map ( (pics, post) => (
-                                        <div key={post} className="col my-2 p-2 bg-body rounded shadow-sm">
-                                            <img src={`http://localhost:8000/img/${pics}`} width="240px" height="240px" alt=""/>
-                                        </div>
-                                    ))}
-                                </div>
+                    {
+                        posts? (posts.map ( (posts, index) => (
+                            <div key={index}>
+                                <OwnPosts posts={posts}/>
                             </div>
-                                <p>{posts.date_posted}</p>
-                                <p>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</p>
-                            </div>
-                    ))) : (
-                    <p className="card-text placeholder-glow">
-                        <span className="placeholder col-7"></span>
-                        <span className="placeholder col-4"></span>
-                        <span className="placeholder col-4"></span>
-                        <span className="placeholder col-6"></span>
-                        <span className="placeholder col-8"></span>
-                    </p>
-                    )
-                }
-            </div>
-            </div>
+                        ))) : (
+                            <>
+                        <p className="card-text placeholder-glow">
+                            <span className="placeholder col-7"></span>
+                            <span className="placeholder col-4"></span>
+                            <span className="placeholder col-4"></span>
+                            <span className="placeholder col-6"></span>
+                            <span className="placeholder col-8"></span>
+                        </p>
+                        <p className="card-text placeholder-glow">
+                            <span className="placeholder col-7"></span>
+                            <span className="placeholder col-4"></span>
+                            <span className="placeholder col-4"></span>
+                            <span className="placeholder col-6"></span>
+                            <span className="placeholder col-8"></span>
+                        </p>
+                        <p className="card-text placeholder-glow">
+                            <span className="placeholder col-7"></span>
+                            <span className="placeholder col-4"></span>
+                            <span className="placeholder col-4"></span>
+                            <span className="placeholder col-6"></span>
+                            <span className="placeholder col-8"></span>
+                        </p>
+                        </>
+                        )
+                    }
+                    </div>
+                </div>
             </div>
         </section>
             </div>
