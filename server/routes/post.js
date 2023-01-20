@@ -58,7 +58,7 @@ router.post('/', auth, upload.array("photos", 8), async (req, res) => {
     }
 })
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // const newinfo = req.user.id
         // console.log(newinfo)

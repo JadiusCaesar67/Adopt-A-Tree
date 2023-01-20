@@ -1,9 +1,37 @@
 import React from 'react';
 import Posts from "./Posts";
+import Card from 'react-bootstrap/Card';
+import Placeholder from 'react-bootstrap/Placeholder';
+import BlankImage from '../../assets/blank-image.svg';
 
 const PostPage = ({ posts, loading, own_id }) => {
   if (loading) {
-    return <h2>Loading...</h2>
+    return (
+      <Card >
+        <Card.Body>
+          <div className='d-flex'>
+            <div className='me-auto'>
+              <Card.Img src={BlankImage} style={{ width: '32px' }} /> 
+            </div>
+            <div className='d-flex'>
+              <Placeholder.Button variant="success" xs={6} style={{ width: '100px' }} />
+            </div>
+          </div>
+        <Placeholder.Button variant="info" xs={6} style={{ width: '100px' }} />
+          <Placeholder as={Card.Title} animation="glow">
+            <Placeholder xs={6} />
+          </Placeholder>
+          <Placeholder as={Card.Text} animation="glow">
+            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+            <Placeholder xs={6} /> <Placeholder xs={8} />
+          </Placeholder>
+        <Card.Img src={BlankImage} style={{ width: '240px' }}/>
+        <Placeholder as={Card.Footer} animation="glow">
+            <Placeholder xs={4} />
+          </Placeholder>
+        </Card.Body>
+      </Card>
+    )
   }
 
   return (
@@ -14,7 +42,7 @@ const PostPage = ({ posts, loading, own_id }) => {
         </div>
     ))}
     </>
-  );
-};
+  )
+}
 
 export default PostPage

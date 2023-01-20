@@ -42,8 +42,6 @@ const Login = ({ setAuth }) => {
             //for in local storage
             localStorage.setItem("token", parseRes.token)
             setAuth(true)
-            // console.log(localStorage)
-            // alert("Login Success")
             toast.success("Login Successful")
         }
         else {
@@ -56,16 +54,15 @@ const Login = ({ setAuth }) => {
         catch (error) {
             toast.error("Password or Username is Incorrect")
             console.log(error.message)
+            console.log(error)
             }
     }
 
 return (
     
-    <header>
-        <section>
     <div className="div_main text-center mb-5">
-        <h3 className="h3 mt-5 mb-3 pt-5 fw-normal">Login</h3>
-        <main className="form-signin">
+        <h3 className="h3 mt-1 mb-3 pt-5 fw-normal">Login</h3>
+        <div className="form-signin">
         <form onSubmit={onSubmitForm}>
 
             <div className="form-floating mb-4">
@@ -74,7 +71,7 @@ return (
                     id="usernameForm" 
                     name="username" 
                     className="form-control" 
-                    placeholder="name@example.com"
+                    placeholder="name_123 or name@example.com"
                     value={username} 
                     onChange={e => onChange(e)} />
                     <label className="form-label" htmlFor="form2Example1">Username</label>
@@ -98,19 +95,15 @@ return (
                 </label>
             </div>
             
-            <button type="submit" className="btn btn-primary btn-success mb-4">Login</button>
+            <button type="submit" className="btn btn-primary btn-success mb-4" >Login</button>
 
             
 
         </form>
     <h5 className="h5 mb-3 fw-normal">Don't have an account yet?</h5>
-    <Link to="/register" className="btn btn-outline-success">Register Here</Link>
-    </main>
-    <p className="mt-5 mb-3 text-muted">&copy; 2022</p> 
+    <a href="/register" className="btn btn-outline-success">Register Here</a>
     </div>
-    </section>
-    </header>
-    
+    </div>
 )
 }
 export default Login;

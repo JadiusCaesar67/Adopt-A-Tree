@@ -101,7 +101,7 @@ const Timeline = ({ id }) => {
                 {
                     method: "GET",
                     //retrieving the token and putting it in the Auth header
-                    headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+                    // headers: { Authorization: "Bearer " + localStorage.getItem('token') }
                 })
             //parsing the json back to a JS object
             const parseRes = await response.json();
@@ -132,7 +132,7 @@ const Timeline = ({ id }) => {
         <>
         <main className="container">
         <div className="my-3 p-3 bg-body rounded shadow-sm">
-            {/* <Link className="a" to="/messenger">Messenger</Link> */}
+            <Link className="a" to="/messenger">Messenger</Link>
         <h1>Posts</h1>
         <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
         Post Something

@@ -1,41 +1,7 @@
 import React, { useState } from "react";
 import Logo from "../../assets/adopt-a-tree-logo-img.png"
 import AvatarHeaders from "./AvatarHeaders";
-const Headers = ({ isAuth, setAuth }) => {
-
-  // const [ isAuthenticated, setIsAuthenticated ] = useState(false)
-
-  // const setAuth = boolean => {
-  //   console.log(isAuthenticated, boolean)
-  //   setIsAuthenticated(boolean)
-  // };
-
-  // const checkAuthenticated = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8000/verify", 
-  //     {
-  //       method: "GET",
-  //       headers: { 
-  //         Authorization: "Bearer " + localStorage.getItem("token")
-  //       }
-  //     });
-
-  //     const parseRes = await response.json()
-
-  //     // console.log(parseRes)
-  //     parseRes === true ? 
-  //     setIsAuthenticated(true)
-  //     :
-  //     setIsAuthenticated(false);
-  //   }
-  //   catch (err){
-  //     console.log(err.message);
-  //   }
-  // }
-
-  // useEffect( () => {
-  //   checkAuthenticated();
-  // }, []);
+const Headers = ({ isAuth, setAuth, showLogin }) => {
 
   const logout = async (e) => {
     window.location.reload(false)
@@ -80,22 +46,28 @@ const Headers = ({ isAuth, setAuth }) => {
                       <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                         <a className="dropdown-item" href="/profile">Profile</a>
                         <a className="dropdown-item" href="/messenger">Messenger</a>
-                        <a className="dropdown-item" href="*" onClick={logout}>Sign out</a>
+                        <a className="dropdown-item" href="*" onClick={logout}>Logout</a>
                       </ul>
                     )
                     :
                     (
                       <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <a className="dropdown-item" href="/login" >Sign in</a>
+                        <button className="dropdown-item" variant="primary" onClick={showLogin}>Login</button>
                       </ul>
                     )
                   }
                   
-                {/* </ul> */}
               </div>
             </div>
           </div>
+{/* 
+          <Modal show={show} backdrop="static" onHide={handleClose}>
+          <Modal.Header closeButton />
+            <Login setAuth={setAuth} />
+          </Modal> */}
+
         </header>
+
         </nav>
     )
 }

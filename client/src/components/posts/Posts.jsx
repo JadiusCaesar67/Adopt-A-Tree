@@ -117,17 +117,17 @@ const Posts = ({ posts, own_id }) => {
     const hour = (hours % 12) || 12
 
     useEffect(() => {
-        // console.log(ownId)
+        console.log(ownId)
         getAvatar()
         // setOwnId(own_id)
-        if (!own_id){
-            const interval = setInterval(() => {
-                // console.log("timed")
-                window.location.reload(false)
-                setOwnId(own_id)
-            }, 500);
-            return () => clearInterval(interval);
-        }
+        // if (!own_id){
+        //     const interval = setInterval(() => {
+        //         // console.log("timed")
+        //         window.location.reload(false)
+        //         setOwnId(own_id)
+        //     }, 500);
+        //     return () => clearInterval(interval);
+        // }
     }, [posts, own_id])
     return(
         <>
@@ -180,7 +180,6 @@ const Posts = ({ posts, own_id }) => {
                 </div>
             ))}
         </div>
-        <li>{posts.user_type}</li>
         <time>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</time>
         </div>
         </div>

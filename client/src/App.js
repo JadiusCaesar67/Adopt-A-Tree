@@ -19,6 +19,7 @@ import Profile from './pages/profile/Profile';
 import Messenger from "./pages/messenger/Messenger";
 import Timeline from "./pages/timeline/Timeline";
 import Headers from "./components/headings/Headers";
+import Modal from 'react-bootstrap/Modal';
 
 function App() {
   const [ isAuthenticated, setIsAuthenticated ] = useState(false)
@@ -26,6 +27,11 @@ function App() {
   const setAuth = boolean => {
     setIsAuthenticated(boolean)
   };
+  //Login modal
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const checkAuthenticated = async () => {
     try {
@@ -77,7 +83,7 @@ function App() {
   return (
     //router to redirect and check authentication
     <div className="App">
-      <Headers isAuth={isAuthenticated} setAuth={setAuth}/>
+      <Headers isAuth={isAuthenticated} setAuth={setAuth} showLogin={handleShow} />
       <Router>
         <div >
           <Routes>
@@ -88,9 +94,10 @@ function App() {
             <Route exact path='/register' element={!isAuthenticated ? (<Registration setAuth={setAuth}/> ): (
               <Navigate to='/timeline'/>
             ) }></Route>
-            <Route exact path='/timeline' element={isAuthenticated ? (<Timeline id={id}/> ): (
-              <Navigate to='/login'/>
-            ) }></Route>
+            <Route exact path="/timeline" element={<Timeline id={id} />} />
+            {/* <Route exact path='/timeline' element={isAuthenticated ? (<Timeline id={id}/> ): (
+              handleShow
+            ) }></Route> */}
             {/* <Route exact path='/messenger' element={isAuthenticated ? (<Messenger /> ): (
               <Navigate to='/login'/>
             ) }></Route>
@@ -103,6 +110,10 @@ function App() {
           </Routes>
         </div>
       </Router>
+      <Modal show={show} backdrop="static" onHide={handleClose}>
+        <Modal.Header closeButton />
+        <Login setAuth={setAuth} />
+      </Modal>
       <ToastContainer />
     </div>
   );
