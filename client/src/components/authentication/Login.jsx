@@ -50,7 +50,11 @@ const Login = ({ setAuth }) => {
             // console.log("Something went wrong or wrong credentials")
         }
 
+        setTimeout(() => {
+            window.location.reload(false)
+        }, 100);
         }
+
         catch (error) {
             toast.error("Password or Username is Incorrect")
             console.log(error.message)

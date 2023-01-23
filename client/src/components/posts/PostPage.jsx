@@ -9,12 +9,12 @@ const PostPage = ({ posts, loading, own_id }) => {
     return (
       <Card >
         <Card.Body>
-          <div className='d-flex'>
+          <div className='d-flex my-3 p-3'>
             <div className='me-auto'>
               <Card.Img src={BlankImage} style={{ width: '32px' }} /> 
             </div>
             <div className='d-flex'>
-              <Placeholder.Button variant="success" xs={6} style={{ width: '100px' }} />
+              <Placeholder.Button variant="success" xs={6} style={{ width: '60px', height: '20px' }} />
             </div>
           </div>
         <Placeholder.Button variant="info" xs={6} style={{ width: '100px' }} />
@@ -27,7 +27,7 @@ const PostPage = ({ posts, loading, own_id }) => {
           </Placeholder>
         <Card.Img src={BlankImage} style={{ width: '240px' }}/>
         <Placeholder as={Card.Footer} animation="glow">
-            <Placeholder xs={4} />
+            <Placeholder xs={3} />
           </Placeholder>
         </Card.Body>
       </Card>

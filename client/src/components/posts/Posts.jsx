@@ -116,19 +116,23 @@ const Posts = ({ posts, own_id }) => {
     const meridiem = hours >= 12 ? 'PM' : 'AM'
     const hour = (hours % 12) || 12
 
+    //refresh button interval if ownAvailable button isn't retrieved yet
     useEffect(() => {
-        console.log(ownId)
+        // console.log(ownId)
         getAvatar()
         // setOwnId(own_id)
-        // if (!own_id){
-        //     const interval = setInterval(() => {
-        //         // console.log("timed")
-        //         window.location.reload(false)
-        //         setOwnId(own_id)
-        //     }, 500);
-        //     return () => clearInterval(interval);
-        // }
+        if (own_id){
+            if (ownId !== posts.user_id){
+                const interval = setInterval(() => {
+                    // console.log("timed")
+                    // window.location.reload(false)
+                    setOwnId(own_id)
+                }, 500);
+                return () => clearInterval(interval);
+            }
+        }
     }, [posts, own_id])
+
     return(
         <>
         <div className="card-body">
@@ -136,7 +140,11 @@ const Posts = ({ posts, own_id }) => {
         <img src={profilePic? profilePic : "https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g"} 
             alt="" className="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" focusable="false"/>
         {
-            own_id? ( ownId === posts.user_id?
+            !own_id? (
+                (available? <div className="card d-flex text-bg-success">Available</div> :
+                            <div className="card d-flex text-bg-secondary">Taken/Unavailable</div>
+                )
+            ) : ( own_id? ( ownId === posts.user_id?
             (loading? <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Loading...</span>
                 </div> 
@@ -165,7 +173,7 @@ const Posts = ({ posts, own_id }) => {
             : 
             ( <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Loading...</span>
-            </div> )
+            </div> ) )
             
         }
         </div>

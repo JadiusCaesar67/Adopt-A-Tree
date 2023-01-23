@@ -94,13 +94,13 @@ const getProfile = async () => {
         console.log("something went wrong")
     }
     };
-    // getConversations();
     getProfile()
-    const interval = setInterval(() => {
-      // getMessages()
-      getConversations()
-    }, 1000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(() => {
+    //   // getMessages()
+    //   getConversations()
+    // }, 1000);
+    // return () => clearInterval(interval);
+    getConversations()
   }, [id]);
 
   //fetch messages
@@ -121,11 +121,11 @@ const getProfile = async () => {
         console.log(err.message);
       }
     };
-    const interval = setInterval(() => {
-      getMessages()
-    }, 1000);
-    return () => clearInterval(interval);
-    // getMessages();
+    // const interval = setInterval(() => {
+    //   getMessages()
+    // }, 1000);
+    // return () => clearInterval(interval);
+    getMessages();
   }, [currentChat]);
 
   const handleSubmit = async (e) => {

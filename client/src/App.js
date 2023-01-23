@@ -89,22 +89,22 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path='/login' element={!isAuthenticated ? (<Login setAuth={setAuth}/> ): (
-              <Navigate to='/timeline'/>
+              <Navigate to='/messenger'/>
             ) } ></Route>
             <Route exact path='/register' element={!isAuthenticated ? (<Registration setAuth={setAuth}/> ): (
               <Navigate to='/timeline'/>
             ) }></Route>
-            <Route exact path="/timeline" element={<Timeline id={id} />} />
+            <Route exact path="/timeline" element={<Timeline id={id} showLogin={handleShow} />} />
             {/* <Route exact path='/timeline' element={isAuthenticated ? (<Timeline id={id}/> ): (
               handleShow
             ) }></Route> */}
-            {/* <Route exact path='/messenger' element={isAuthenticated ? (<Messenger /> ): (
+            <Route exact path='/messenger' element={isAuthenticated ? (<Messenger /> ): (
               <Navigate to='/login'/>
             ) }></Route>
-            <Route exact path='/profile' element={isAuthenticated ? (<Profile /> ): (
+            {/* <Route exact path='/profile' element={isAuthenticated ? (<Profile /> ): (
               <Navigate to='/login'/>
             ) }></Route> */}
-            <Route exact path="/messenger" element={<Messenger/>} />
+            {/* <Route exact path="/messenger" element={<Messenger/>} /> */}
             <Route exact path='/profile' element={<Profile />} />
             <Route path="*" element={<Test />} />
           </Routes>

@@ -5,7 +5,7 @@ import PostPage from "../../components/posts/PostPage";
 import { toast } from 'react-toastify';
 import Pagination from "../../components/posts/Pagination";
 
-const Timeline = ({ id }) => {
+const Timeline = ({ id, showLogin }) => {
     // console.log(id)
     const [posts, setPosts] = useState([]);
     const [inputs, setInputs] = useState({
@@ -49,6 +49,7 @@ const Timeline = ({ id }) => {
     
     const { tree_name, tree_descr, note } = inputs
     const onSubmitForm = async (e) => {
+        window.location.reload(false)
         e.preventDefault()
         try {
                 //making a body object from the values of username and password
@@ -132,11 +133,12 @@ const Timeline = ({ id }) => {
         <>
         <main className="container">
         <div className="my-3 p-3 bg-body rounded shadow-sm">
-            <Link className="a" to="/messenger">Messenger</Link>
         <h1>Posts</h1>
-        <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
-        Post Something
-        </button>
+        {
+            id? <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
+            Post Something
+            </button> : <><Link onClick={showLogin}>Login</Link> or <Link to="/register">Register</Link> to Post Here</>
+        }
         {/* Posting in Modal */}
         <div className="modal fade" id="modal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
@@ -156,7 +158,7 @@ const Timeline = ({ id }) => {
                     <input
                         
                         type="text"
-                        id="postContent"
+                        id="tree_content"
                         name="tree_name"
                         className="form-control"
                         placeholder="Optional"
@@ -167,28 +169,18 @@ const Timeline = ({ id }) => {
                 <div className="form-floating mb-4">
                     <input
                         type="text"
-                        id="postContent"
+                        id="tree_description"
                         name="tree_descr"
                         className="form-control"
                         value={tree_descr}
                         onChange={e => onChange(e)} />
                     <label className="form-label" htmlFor="form2Example1">Tree Description</label>
                 </div>
-                {/* <div className="form-floating mb-4">
-                    <input
-                        type="text"
-                        id="postContent"
-                        name="price"
-                        className="form-control"
-                        value={price}
-                        onChange={e => onChange(e)} />
-                    <label className="form-label" htmlFor="form2Example1">Price</label>
-                </div> */}
                 <div className="form-floating mb-4">
                     <input
                         required
                         type="text"
-                        id="postContent"
+                        id="caption"
                         name="note"
                         className="form-control"
                         value={note}
@@ -205,9 +197,9 @@ const Timeline = ({ id }) => {
         <button type="reset" className="btn btn-secondary" onClick={handleDiscard}>Clear Changes</button>
         {
             (inputs.note) !== ""? 
-            (<button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post It</button> ) 
+            (<button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post</button> ) 
             : 
-            (<button type="submit" className="btn btn-success">Post It</button> )
+            (<button type="submit" className="btn btn-success">Post</button> )
         }
         {/* <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post It</button>  */}
       </div>
