@@ -15,8 +15,7 @@ const Registration = ({ setAuth }) => {
             lastname: e.target.lastname.value,
             email: e.target.email.value,
             gender: e.target.gender.value,
-            address: e.target.address.value,
-            user_type: e.target.user_type.value,
+            address: e.target.address.value
         }
         setState(newState)
         // console.log(newState)
@@ -30,7 +29,7 @@ const Registration = ({ setAuth }) => {
         )
         const parseRes = await response.json()
         // console.log(parseRes)
-        console.log(state)
+        console.log(parseRes)
         
         if(parseRes.token) {
             //localstorage
@@ -40,7 +39,7 @@ const Registration = ({ setAuth }) => {
             console.log("Registration Successful")
         } else {
             setAuth(false)
-            toast.error(parseRes)
+            toast.error("Registration Failed")
             console.log("Something wrong")
         }
 
@@ -56,15 +55,6 @@ const Registration = ({ setAuth }) => {
         <div className="container px-5 text-center div_main">
             <h3 className="h3 mt-1 mb-3 pt-5 fw-normal">Create an account</h3>
     	<form onSubmit={handleSubmit} className="pt-5">
-            
-        <div className="input-group mb-3">
-            <span className="input-group-text ">Register as a:</span>
-            <select name="user_type">
-                <option value="Sponsor">Sponsor</option>
-                <option value="Planter">Planter</option>
-            </select>
-            </div>
-            <br />
             
                 <div className="input-group mb-3">
                 {/* username */}

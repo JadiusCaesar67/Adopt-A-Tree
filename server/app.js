@@ -118,7 +118,7 @@ app.get('/verify', auth, async (req, res) => {
 
 app.post('/register', async (req, res) => {
     try {
-        const { username, firstname, lastname, email, gender, address, user_type, password } = req.body
+        const { username, firstname, lastname, email, gender, address, password } = req.body
         console.log("registration attempt:")
         //check if user or email exists
         const user = await pool.query(`SELECT * FROM users WHERE username = '${username}' OR email = '${email}'`)
@@ -137,8 +137,8 @@ app.post('/register', async (req, res) => {
  
         //add new user to the database
         const newUser = await pool.query(`
-        INSERT INTO users (username, first_name, last_name, email, gender, address, user_type, password)
-        VALUES ('${username}', '${firstname}', '${lastname}', '${email}', '${gender}', '${address}', '${user_type}', '${bcryptPassword}') RETURNING *
+        INSERT INTO users (username, first_name, last_name, email, gender, address, password)
+        VALUES ('${username}', '${firstname}', '${lastname}', '${email}', '${gender}', '${address}', '${bcryptPassword}') RETURNING *
         `)
  
         const token = generateJwt(newUser.rows[0])
@@ -191,132 +191,6 @@ app.get('/profile', auth, async (req, res) => {
         console.error(error.message);
     }
 })
-
-// app.post('/upload_avatar', auth, upload.single("avatar"), async (req, res) => {
-//     try {
-//         const id = req.user.id
-//         const { filename } = req.file
-//         console.log(filename);
-
-//         //checks if id exists already
-//         const image = await pool.query(`SELECT * FROM pictures WHERE id = '${id}'`)
-//         // console.log(image.rows[0].avatar)
-//         if (image.rows.length === 0){
-//             await pool.query(`
-//             INSERT INTO pictures (id, avatar) VALUES
-//             ( '${id}', '${filename}') RETURNING * `)
-//             // res.json({ newPicture })
-//             console.log("Avatar upload success")
-//             res.send("Avatar upload success")
-//         }
-
-//         else if (image.rows[0].id === id) {
-//             if (fs.existsSync(`./public/images/${image.rows[0].avatar}`)) {
-//                 fs.unlinkSync(`./public/images/${image.rows[0].avatar}`);
-//                 console.log("File removed if:", image.rows[0].avatar);
-//             }
-//             await pool.query(`UPDATE pictures 
-//             SET avatar = '${filename}' WHERE id = '${id}'`)
-//             res.send("Updated Avatar")
-//             console.log("Updated Avatar")
-//         }
-        
-//     } catch (error) {
-//         console.error(error.message)
-//     }
-// })
-
-// app.get('/avatar', auth, async (req, res) => {
-//     try {
-//         const id = req.user.id
-//         const response = await pool.query(`
-//         SELECT * FROM pictures WHERE id = '${id}'
-//         `)
-//         res.json(response.rows[0].avatar)
-//         // console.log(response.rows[0].avatar)
-
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// })
-
-// app.post('/photos', auth, upload.none("photos"), async (req, res) => {
-//     try {
-//         const id = req.user.id
-//         // const { filename } = req.file
-//         //checks if id exists already
-//         const image = await pool.query(`SELECT * FROM pictures WHERE id = '${id}'`)
-//         console.log(image.rows[0])
-//         if (image.rows.length === 0){
-//             // await pool.query(`
-//             // INSERT INTO pictures (id, photos) VALUES
-//             // ( '${id}', '${filename}') RETURNING * `)
-//             // res.json({ newPicture })
-//             console.log("Photo upload success")
-//             res.send("Photo upload success")
-//         }
-
-//         else  {
-//             // await pool.query(`
-//             // INSERT INTO pictures (id, photos) VALUES
-//             // ( '${id}', '${filename}') RETURNING * `)
-//             res.send("User 1st Photo upload success")
-//             console.log("User 1st Photo upload success")
-
-//         }
-        
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// })
-
-// app.get('/photos', auth, async (req, res) => {
-//     try {
-//         const id = req.user.id
-//         const images = await pool.query(`
-//         SELECT * FROM pictures WHERE id = '${id}'
-//         `)
-//         res.json(images.rows[0].avatar)
-//         console.log(images.rows[0].avatar)
-
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// })
-
-// app.post('/posts', auth, async (req, res) => {
-//     try {
-//         const user_id = req.user.id
-//         const { note } = req.body
-//         const posting = await pool.query(`
-//         INSERT INTO posts (user_id, post_description, date_posted) VALUES
-//         ('${user_id}', '${note}', CURRENT_TIMESTAMP) RETURNING *
-//         `)
-//         console.log("Posted")
-//         res.json(posting.rows);
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// })
-
-// app.get('/posts', auth, async (req, res) => {
-//     try {
-//         // const newinfo = req.user.id
-//         // console.log(newinfo)
-//         const posts = await pool.query(`
-//         SELECT * FROM posts INNER JOIN
-//         users ON
-//         posts.user_id = users.id`)
-//         // const ids = posts.rows.map((obj) => obj);
-//         console.log(posts.rows)
-//         res.json(posts.rows)
-
-//     } catch (error) {
-//         console.error(error.message);
-//     }
-// })
-
-
 
 // server.listen(5000, () => {
 //     console.log('Server io listening on http://localhost:5000');
