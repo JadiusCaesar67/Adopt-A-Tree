@@ -5,7 +5,7 @@ import { auth } from  "../middleware/auth.js"
 import { upload } from "../middleware/upload.js";
 
 const router = express.Router();
-const  pool = connectDatabase()
+const pool = connectDatabase()
 
 
 router.post('/avatar', auth, upload.single("avatar"), async (req, res) => {
@@ -15,12 +15,12 @@ router.post('/avatar', auth, upload.single("avatar"), async (req, res) => {
         console.log(filename);
 
         //checks if id exists already
-        const image = await pool.query(`SELECT * FROM avatars WHERE id = '${id}'`)
+        const image = await pool.query(`SELECT * FROM avatars WHERE user_id = '${id}'`)
         // console.log(image.rows[0].avatar)
         // console.log(image.rows.length)
         if (image.rows.length === 0){
             await pool.query(`
-            INSERT INTO avatars (id, avatar) VALUES
+            INSERT INTO avatars (user_id, avatar) VALUES
             ( '${id}', '${filename}') RETURNING * `)
             // res.json({ newPicture })
             console.log("Avatar upload success")
@@ -33,14 +33,14 @@ router.post('/avatar', auth, upload.single("avatar"), async (req, res) => {
                 console.log("File removed if:", image.rows[0].avatar);
             }
             await pool.query(`UPDATE avatars 
-            SET avatar = '${filename}' WHERE id = '${id}'`)
+            SET avatar = '${filename}' WHERE user_id = '${id}'`)
             res.send(`Updated Avatars '${filename}'`)
             console.log("Updated Avatar")
         }
         
         else {
             await pool.query(`
-            INSERT INTO avatars (id, avatar) VALUES
+            INSERT INTO avatars (user_id, avatar) VALUES
             ( '${id}', '${filename}') RETURNING * `)
             console.log("First avatar upload success")
             res.send(`Avatar '${filename}' upload success`)
@@ -55,7 +55,7 @@ router.get('/avatar', auth, async (req, res) => {
     try {
         const id = req.user.id
         const response = await pool.query(`
-        SELECT * FROM avatars WHERE id = '${id}'
+        SELECT * FROM avatars WHERE user_id = '${id}'
         `)
         res.json(response.rows[0].avatar)
         // console.log(response.rows[0].avatar)
@@ -70,7 +70,7 @@ router.get('/avatar1s', async (req, res) => {
     try {
         const id = req.query.id
         const response = await pool.query(`
-        SELECT * FROM avatars WHERE id = '${id}'
+        SELECT * FROM avatars WHERE user_id = '${id}'
         `)
         res.json(response.rows[0].avatar)
         
