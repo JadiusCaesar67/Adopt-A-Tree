@@ -175,7 +175,6 @@ const getProfile = async () => {
   }, [currentChat]);
   return (
     <>
-      {/* <Topbar /> */}
       <div className="messenger">
         <div className="chatMenu">
           <div className="chatMenuWrapper">
@@ -200,7 +199,9 @@ const getProfile = async () => {
                   ))}
                 </div>
                 <div className="chatBoxBottom">
-                  <textarea
+                  <textarea 
+                    style={{ resize : "none" }}
+                    rows="4" cols="50"
                     className="chatMessageInput"
                     placeholder="Say something..."
                     onChange={(e) => setNewMessage(e.target.value)}

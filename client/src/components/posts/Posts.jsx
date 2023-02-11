@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import CommentSection from "../comments/CommentsSection";
+
 // import { Link } from "react-router-dom";
 
 const Posts = ({ posts, own_id }) => {
@@ -53,9 +55,16 @@ const Posts = ({ posts, own_id }) => {
         setAvailable(available => !available)
     }
 
+    const onClickEdit = () => {
+        //update code
+    }
+
     const onClickDelete = () => {
         deletePost()
         setLoading(true)
+        setTimeout(() => {
+            window.location.reload(false)
+        }, 100);
         console.log(posts.post_id)
     }
 
@@ -66,7 +75,7 @@ const Posts = ({ posts, own_id }) => {
             // console.log(available)
             try {
                 const response = await fetch(
-                    "http://localhost:8000/posts?post_id=" + posts.post_id,
+                    "http://localhost:8000/posts/available?post_id=" + posts.post_id,
                     {
                         method: "PUT",
                         headers: {
@@ -153,8 +162,10 @@ const Posts = ({ posts, own_id }) => {
               Available
             </button>
                 <ul className="dropdown-menu">
-                <li className="dropdown-item" onClick={onClickAvailable}>Set to Taken/Unavailable</li>
-                <li className="dropdown-item" onClick={onClickDelete}>Delete Post</li>
+                <li className="text-secondary dropdown-item user-select-none" onClick={onClickAvailable}>Set to Taken/Unavailable</li>
+                <li className="dropdown-item user-select-none" onClick={onClickEdit}>Edit Post</li>
+                <hr className="dropdown-divider"/>
+                <li className="text-danger dropdown-item user-select-none" onClick={onClickDelete}>Delete Post</li>
                 </ul>
             </div>
           :
@@ -163,8 +174,10 @@ const Posts = ({ posts, own_id }) => {
                 Taken
             </button>
             <ul className="dropdown-menu">
-                <li className="dropdown-item" onClick={onClickAvailable}>Set to Available</li>
-                <li className="dropdown-item" onClick={onClickDelete}>Delete Post</li>
+                <li className="text-success dropdown-item user-select-none" onClick={onClickAvailable}>Set to Available</li>
+                <li className="dropdown-item user-select-none" onClick={onClickEdit}>Edit Post</li>
+                <hr className="dropdown-divider"/>
+                <li className="text-danger dropdown-item user-select-none" onClick={onClickDelete}>Delete Post</li>
             </ul>
             </div>) )
             :
@@ -190,6 +203,8 @@ const Posts = ({ posts, own_id }) => {
         </div>
         <time>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</time>
         </div>
+                {/* Comment Sections */}
+                <CommentSection postId={posts.post_id} />
         </div>
         </>
     )

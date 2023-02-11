@@ -49,7 +49,8 @@ const Timeline = ({ id, showLogin }) => {
     
     const { tree_name, tree_descr, note } = inputs
     const onSubmitForm = async (e) => {
-        window.location.reload(false)
+        // window.location.reload(false)
+        console.log(inputs)
         e.preventDefault()
         try {
                 //making a body object from the values of username and password
@@ -58,10 +59,12 @@ const Timeline = ({ id, showLogin }) => {
             for (var i = 0; i < image.length; i++) {
                 formData.append("photos", image[i])
             }
-            formData.append("tree_name", tree_name)
-            formData.append("tree_descr", tree_descr)
-            // formData.append("body", parseBody)
-            // formData.append("photos", image) use for loop instead
+            if (tree_name !== "" ) {
+                formData.append("tree_name", tree_name.toLowerCase())
+                if (tree_descr !== ""){
+                    formData.append("tree_descr", tree_descr)
+                }
+            }
             formData.append("note", note)
 
             //fetch api for POST method
@@ -76,7 +79,7 @@ const Timeline = ({ id, showLogin }) => {
                 }
             )
             const parseRes = await response.json()
-            console.log(parseRes.note)
+            console.log(parseRes)
             toast.success("Posted Successfully")
             setInputs({
                 tree_name: "",
@@ -171,17 +174,20 @@ const Timeline = ({ id, showLogin }) => {
                         type="text"
                         id="tree_description"
                         name="tree_descr"
+                        placeholder="Optional"
                         className="form-control"
                         value={tree_descr}
                         onChange={e => onChange(e)} />
                     <label className="form-label" htmlFor="form2Example1">Tree Description</label>
                 </div>
                 <div className="form-floating mb-4">
-                    <input
+                    <textarea
+                        style={{ resize : "none" }}
                         required
                         type="text"
                         id="caption"
                         name="note"
+                        placeholder="Required"
                         className="form-control"
                         value={note}
                         onChange={e => onChange(e)} />
@@ -194,12 +200,26 @@ const Timeline = ({ id, showLogin }) => {
                 {/* <button type="submit" className="btn btn-primary btn-block mb-4">Post</button> */}
       </div>
       <div className="modal-footer">
-        <button type="reset" className="btn btn-secondary" onClick={handleDiscard}>Clear Changes</button>
         {
-            (inputs.note) !== ""? 
-            (<button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post</button> ) 
+            ( inputs.note || inputs.tree_name || inputs.tree_descr || imageDiscard) !== ""? 
+            (
+                <>
+                <button type="reset" className="btn btn-secondary" onClick={handleDiscard}>Clear Changes</button>
+                {
+                    inputs.tree_name && inputs.note  !== ""? 
+                    <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post</button> 
+                    :
+                    <button type="submit" className="btn btn-secondary" disabled>Post</button>
+                }
+                </> 
+            ) 
             : 
-            (<button type="submit" className="btn btn-success">Post</button> )
+            (
+                <>
+                <button type="reset" className="btn btn-outline-secondary" disabled>Clear Changes</button>
+                <button type="submit" className="btn btn-secondary" disabled>Post</button>
+                </>
+            )
         }
         {/* <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post It</button>  */}
       </div>
@@ -232,11 +252,6 @@ const Timeline = ({ id, showLogin }) => {
                 paginate={paginate}
             />
             
-            {/* {posts.map ( (post, index) => (
-                <div key={index} className="card my-3 p-3 bg-body rounded shadow-sm">
-                    <Posts post={post} own_id={id} posts={currentPosts} />
-                </div>
-            ))} */}
             </div>
             
             </main>

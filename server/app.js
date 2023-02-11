@@ -4,14 +4,15 @@ import  express from  "express"
 import  bcrypt  from  "bcryptjs"
 import { auth } from  "./middleware/auth.js"
 import { generateJwt } from "./jwt/jwtGenerator.js";
-import cors from "cors"
+import cors from "cors";
 // import { createServer } from "http";
 import { Server } from "socket.io";
-import userRoute from "./routes/users.js"
+import userRoute from "./routes/users.js";
 import conversationRoute from "./routes/conversation.js";
 import messageRoute from "./routes/messages.js";
-import photos from "./routes/photos.js"
-import posts from "./routes/post.js"
+import photosRoute from "./routes/photos.js";
+import postsRoute from "./routes/post.js";
+import commentsRoute from "./routes/comments.js";
 
 const  pool = connectDatabase()
 const  app = express()
@@ -97,8 +98,9 @@ io.on("connection", (socket) => {
 
 //routes
 app.use("/users", userRoute);
-app.use("/photos", photos)
-app.use("/posts", posts)
+app.use("/photos", photosRoute)
+app.use("/posts", postsRoute)
+app.use("/comments", commentsRoute)
 app.use("/conversations", conversationRoute)
 app.use("/messages", messageRoute)
 
