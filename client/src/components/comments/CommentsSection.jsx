@@ -13,6 +13,7 @@ const CommentSection = ({ postId, ownId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [deleteReloadComments, setDeleteReloadComments] = useState(false)
   const [limit, setLimit] = useState(1);
   // console.log(comments)
 
@@ -35,8 +36,9 @@ const CommentSection = ({ postId, ownId }) => {
     //   fetchComments();
     // }, 1000);
     // return () => clearInterval(interval);
+    setDeleteReloadComments(false)
     fetchComments();
-  }, [postId]);
+  }, [postId, isPosting, deleteReloadComments]);
   
   //loading comments
   if (isLoading) {
@@ -99,7 +101,8 @@ const CommentSection = ({ postId, ownId }) => {
               comment={comment} 
               index={index} 
               comments={comments} 
-              setComments={setComments} 
+              setComments={setComments}
+              setDeleteReloadComments={setDeleteReloadComments} 
               ownId={ownId}
             />
             </div>

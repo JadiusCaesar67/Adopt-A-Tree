@@ -6,15 +6,15 @@ import { Card, Dropdown, Form, FormControl, Button, Spinner }
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-const Comment = ({ comment, index, comments, setComments, ownId }) => {
+const Comment = ({ comment, index, comments, setComments, setDeleteReloadComments, ownId }) => {
   const [username, setUsername] = useState(comment.username)
-    const [text, setText] = useState(comment.text);
-    const [isEditing, setIsEditing] = useState(false);
-    const [newComment, setNewComment] = useState(comment.text);
-    const [isSaving, setIsSaving] = useState(false);
-    const [sureDelete, setSureDelete] = useState(false)
-    const [isDeleting, setIsDeleting] = useState(false);
-//   console.log(comment.comment_id)
+  const [text, setText] = useState(comment.text);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [sureDelete, setSureDelete] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false);
+  console.log(ownId === comment.user_id)
+  console.log(comment.user_id)
 
 //   update comment
   const handleEdit = () => {
@@ -67,7 +67,6 @@ const Comment = ({ comment, index, comments, setComments, ownId }) => {
 
   const handleSureDelete = async () => {
     setIsDeleting(true);
-    console.log(comment.comment_id)
     try {
       const response = await fetch(
           "http://localhost:8000/comments?commentId=" + comment.comment_id,
@@ -80,8 +79,9 @@ const Comment = ({ comment, index, comments, setComments, ownId }) => {
           })
           
       if (response.ok) {
-        setComments(comments.filter((c) => c._id !== comment._id));
+        setComments(comments.filter((c) => c.comment_id !== comment.comment_id));
         setIsDeleting(false);
+        setDeleteReloadComments(true)
       }
       const parseRes = await response.json()
       console.log(parseRes)
@@ -103,7 +103,10 @@ const Comment = ({ comment, index, comments, setComments, ownId }) => {
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
-            <div className="d-flex">
+            <div className={ 
+              ownId === comment.user_id ? 
+              "d-flex " : ""
+            }>
               {isSaving ? (
                 <Button variant="success" disabled>
                   <Spinner
@@ -161,24 +164,24 @@ const Comment = ({ comment, index, comments, setComments, ownId }) => {
       </Card.Body>
           <Card.Footer className="text-muted">{format(comment.date_commented)}</Card.Footer>
     </Card>
-                
+
+      {
+        ownId === comment.user_id && 
         <Dropdown>
             <Dropdown.Toggle variant="light" id="dropdown-basic" className="float-right comment-options-button">
                 <FontAwesomeIcon icon={faEllipsisH} className="float-right comment-options-button-svg"/>
             </Dropdown.Toggle>
 
             <Dropdown.Menu as="h6" variant="flush" style={{ border: "none" }}>
-            {/* <Dropdown.Item className="popover-item" >
-                Hide
-            </Dropdown.Item> */}
-            <Dropdown.Item className="popover-item" onClick={handleEdit}>
-                Edit
-            </Dropdown.Item>
-            <Dropdown.Item className="popover-item" onClick={handleDelete}>
-                Delete
-            </Dropdown.Item>
+              <Dropdown.Item className="popover-item" onClick={handleEdit}>
+                  Edit
+              </Dropdown.Item>
+              <Dropdown.Item className="popover-item" onClick={handleDelete}>
+                  Delete
+              </Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
+      }  
     </>
   );
 }

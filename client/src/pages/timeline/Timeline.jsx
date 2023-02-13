@@ -8,9 +8,10 @@ import Pagination from "../../components/posts/Pagination";
 const Timeline = ({ id, showLogin }) => {
     // console.log(id)
     const [posts, setPosts] = useState([]);
+    const [newPost, setNewPost] = useState(false);
     const [inputs, setInputs] = useState({
         tree_name: "",
-        tree_descr: "",
+        tree_description: "",
         note: ""
     })
     const [image, setImage] = useState({})
@@ -18,6 +19,7 @@ const Timeline = ({ id, showLogin }) => {
     const [loading, setLoading] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [postsPerPage] = useState(5)
+    const [isPosting, setIsPosting] = useState(false)
     // console.log(image)
     // console.log((inputs.tree_name && inputs.tree_descr && inputs.note) === "" && (Object.keys(image).length === 0 && image.constructor === Object))
     //setting the inputs
@@ -40,17 +42,17 @@ const Timeline = ({ id, showLogin }) => {
         }
         setInputs({
             tree_name: "",
-            tree_descr: "",
+            tree_description: "",
             note: ""
         })
+        setIsPosting(false)
         setImage(Object)
         toast.warn("Changes Cleared")
     }
     
-    const { tree_name, tree_descr, note } = inputs
+    const { tree_name, tree_description, note } = inputs
     const onSubmitForm = async (e) => {
-        // window.location.reload(false)
-        console.log(inputs)
+        setIsPosting(true)
         e.preventDefault()
         try {
                 //making a body object from the values of username and password
@@ -61,8 +63,8 @@ const Timeline = ({ id, showLogin }) => {
             }
             if (tree_name !== "" ) {
                 formData.append("tree_name", tree_name.toLowerCase())
-                if (tree_descr !== ""){
-                    formData.append("tree_descr", tree_descr)
+                if (tree_description !== ""){
+                    formData.append("tree_description", tree_description)
                 }
             }
             formData.append("note", note)
@@ -78,12 +80,13 @@ const Timeline = ({ id, showLogin }) => {
                     body: formData
                 }
             )
-            const parseRes = await response.json()
-            console.log(parseRes)
+            const parsedResponse = await response.json()
+            setPosts([...posts, parsedResponse]);
+            setNewPost(true)
             toast.success("Posted Successfully")
             setInputs({
                 tree_name: "",
-                tree_descr: "",
+                tree_description: "",
                 note: ""
             })
             if (imageDiscard) { 
@@ -91,8 +94,10 @@ const Timeline = ({ id, showLogin }) => {
                 setImageDiscard("")
             }
             setImage(Object)
+            setIsPosting(false)
+            // window.location.reload(false)
         } catch (error) {
-            console.log(error.message)
+            console.error(error.message)
         }
     }
 
@@ -130,7 +135,7 @@ const Timeline = ({ id, showLogin }) => {
     //     }, 1000);
     // return () => clearInterval(interval);
         getPosts();
-    }, [])
+    }, [newPost])
 
     //Handle default textarea keys
     // const handleKeyDown = (e) => {
@@ -158,7 +163,7 @@ const Timeline = ({ id, showLogin }) => {
             <form onSubmit={onSubmitForm}>
             <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">Post Something</h1>
-                {((inputs.tree_name || inputs.tree_descr || inputs.note || imageDiscard) === "")?
+                {((inputs.tree_name || inputs.tree_description || inputs.note || imageDiscard) === "")?
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 :
                 <button type="button" className="btn-close" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -182,10 +187,10 @@ const Timeline = ({ id, showLogin }) => {
                     <input
                         type="text"
                         id="tree_description"
-                        name="tree_descr"
+                        name="tree_description"
                         placeholder="Optional"
                         className="form-control"
-                        value={tree_descr}
+                        value={tree_description}
                         onChange={e => onChange(e)} />
                     <label className="form-label" htmlFor="form2Example1">Tree Description</label>
                 </div>
@@ -210,13 +215,22 @@ const Timeline = ({ id, showLogin }) => {
       </div>
       <div className="modal-footer">
         {
-            ( inputs.note || inputs.tree_name || inputs.tree_descr || imageDiscard) !== ""? 
+            ( inputs.note || inputs.tree_name || inputs.tree_description || imageDiscard) !== ""? 
             (
                 <>
                 <button type="reset" className="btn btn-secondary" onClick={handleDiscard}>Clear Changes</button>
                 {
                     inputs.tree_name && inputs.note  !== ""? 
-                    <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post</button> 
+                    <>
+                    {   
+                        isPosting? 
+                        <button className="btn btn-success" type="button" disabled>
+                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                        </button> : 
+                      <button type="submit" className="btn btn-success">Post</button> 
+                    }
+                    </>
                     :
                     <button type="submit" className="btn btn-secondary" disabled>Post</button>
                 }
@@ -260,10 +274,9 @@ const Timeline = ({ id, showLogin }) => {
                 totalPosts={posts.length}
                 paginate={paginate}
             />
-            
             </div>
             
-            </main>
+        </main>
         </>
     )
 }

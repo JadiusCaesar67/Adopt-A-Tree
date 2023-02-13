@@ -15,11 +15,11 @@ router.post('/', auth, async (req, res) => {
         // console.log(photos)
         console.log(req.body)
 
-        // const comments = await pool.query(`
-        // INSERT INTO comments (post_id, user_id, text, date_commented, date_comment_edited) VALUES
-        // ('${postId}', '${userId}', '${replacedText}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *
-        // `)
-        // res.json(comments.rows);
+        const comments = await pool.query(`
+        INSERT INTO comments (post_id, user_id, text, date_commented, date_comment_edited) VALUES
+        ('${postId}', '${userId}', '${replacedText}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *
+        `)
+        res.json(comments.rows);
         res.json(text);
     } catch (error) {
         console.log(error.message)
@@ -69,7 +69,9 @@ router.delete('/', auth, async (req, res) => {
         const commentId = req.query.commentId
         console.log(commentId)
         const deleteComment = await pool.query(`
-        DELETE FROM comments WHERE '${commentId}' = comment_id RETURNING *`)
+        DELETE FROM comments 
+        WHERE '${commentId}' = comment_id 
+        RETURNING *`)
         res.json(deleteComment.rows[0])
         console.log(deleteComment.rows[0])
 

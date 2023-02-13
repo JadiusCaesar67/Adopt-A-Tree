@@ -60,10 +60,9 @@ const Posts = ({ posts, own_id }) => {
     const onClickDelete = () => {
         deletePost()
         setLoading(true)
-        setTimeout(() => {
-            window.location.reload(false)
-        }, 100);
-        console.log(posts.post_id)
+        // setTimeout(() => {
+        //     window.location.reload(false)
+        // }, 100);
     }
 
     //Availability
@@ -125,9 +124,7 @@ const Posts = ({ posts, own_id }) => {
 
     //refresh button interval if ownAvailable button isn't retrieved yet
     useEffect(() => {
-        // console.log(ownId)
         getAvatar()
-        // setOwnId(own_id)
         if (own_id){
             if (ownId !== posts.user_id){
                 const interval = setInterval(() => {

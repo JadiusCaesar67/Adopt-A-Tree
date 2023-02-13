@@ -61,66 +61,56 @@ router.post('/test', auth, async (req, res) => {
 
 //Create
 router.post('/', auth, upload.array("photos", 3), async (req, res) => {
-    console.log(req.body)
     try {
         const user_id = req.user.id
-        const { tree_name, tree_descr, note } = req.body
+        const { tree_name, tree_description, note } = req.body
         const rep_text_note = note.replace(/'/g, "''")
         const filenames = req.files
         const photos = filenames.map((f) => f.filename)
-        // console.log(photos)
+
+        //Check if tree name already existed
         const checkExisting = await pool.query(`SELECT * FROM trees WHERE name = '${tree_name}'`)
         // console.log(tree_descr)
         // const checkExistingDescr = await pool.query(`SELECT tree_description FROM trees WHERE name = '${name}'`)
-        // console.log(checkExisting.rows[0].name)
-        // console.log(checkExisting.rows[0].tree_description)
-
+        console.log(checkExisting.rows.length === null)
         
-        // const post = await pool.query(`
-        // INSERT INTO posts (user_id, post_description, pictures, date_posted, date_edited, available) VALUES
-        // ('${user_id}', '${rep_text_note}', '{${photos}}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true) RETURNING *
-        // `)
-
         let tree;
-        
+        //if tree name is non existent then the new data is inserted else it would proceed to tree description
         if (checkExisting.rows.length === 0){
-            if (tree_name && tree_descr){
+            if (tree_name && tree_description){
                 tree = await pool.query(`
                 INSERT INTO trees (name, tree_description) VALUES
-                ('${tree_name}', '${tree_descr}') RETURNING *
+                ('${tree_name}', '${tree_description}') RETURNING *
+            `)
+            } else {
+                tree = await pool.query(`
+                INSERT INTO trees (name) VALUES
+                ('${tree_name}') RETURNING *
             `)
             }
         }
+        //check if there is content in tree description 
         else {
             tree =
-                checkExisting.rows[0].tree_description === 0? 
+                checkExisting.rows[0].tree_description === null ? 
                 ( await pool.query(`
-                UPDATE trees SET tree_description = '${tree_descr}' 
+                UPDATE trees SET tree_description = '${tree_description}' 
                 WHERE name = '${tree_name}' RETURNING *
                 `)) 
                 : 
                 (await pool.query(`
-                UPDATE trees SET tree_description = '${tree_descr + ' |&&| ' + checkExisting.rows[0].tree_description}' 
+                UPDATE trees 
+                SET tree_description = '${tree_description + 'New Info Description |&&| New Info Description' + checkExisting.rows[0].tree_description}' 
                 WHERE name = '${tree_name}' RETURNING *
                 `))
-            
             }
-            
-            console.log(tree.rows)
-
-        // await pool.query(`
-        //         UPDATE posts SET tree_id = '${tree.rows[0].tree_id}' 
-        //         WHERE post_id = '${post.rows[0].post_id}'
-        //     `)
-            
+        console.log(tree.rows[0].tree_id)
         const post = await pool.query(`
         INSERT INTO posts (user_id, post_description, pictures, tree_id, date_posted, date_edited, available) VALUES
         ('${user_id}', '${rep_text_note}', '{${photos}}', '${tree.rows[0].tree_id}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true) RETURNING *
         `)
         res.json(post.rows[0]);
         
-        // console.log(photos)
-        // res.json();
     } catch (error) {
         console.log(error.message)
     }
@@ -211,7 +201,9 @@ router.delete('/delete', auth, async (req, res) => {
         }
         
         const delete_post = await pool.query(`
-        DELETE FROM posts WHERE '${post_id}' = post_id RETURNING *`)
+        DELETE FROM posts
+        WHERE post_id IN (SELECT post_id FROM comments 
+            WHERE post_id='${post_id}') RETURNING *`)
         res.json(delete_post.rows[0])
         console.log(delete_post.rows[0])
     } catch (error) {
