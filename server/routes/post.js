@@ -117,7 +117,7 @@ router.post('/', auth, upload.array("photos", 3), async (req, res) => {
         INSERT INTO posts (user_id, post_description, pictures, tree_id, date_posted, date_edited, available) VALUES
         ('${user_id}', '${rep_text_note}', '{${photos}}', '${tree.rows[0].tree_id}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true) RETURNING *
         `)
-        res.json(post.rows);
+        res.json(post.rows[0]);
         
         // console.log(photos)
         // res.json();

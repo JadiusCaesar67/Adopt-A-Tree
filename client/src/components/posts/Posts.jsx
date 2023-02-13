@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CommentSection from "../comments/CommentsSection";
 
-// import { Link } from "react-router-dom";
-
 const Posts = ({ posts, own_id }) => {
     // console.log(posts.post_id)
     const [profilePic, setProfilePic] = useState("")
@@ -204,7 +202,7 @@ const Posts = ({ posts, own_id }) => {
         <time>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</time>
         </div>
                 {/* Comment Sections */}
-                <CommentSection postId={posts.post_id} />
+                <CommentSection postId={posts.post_id} ownId={own_id}/>
         </div>
         </>
     )

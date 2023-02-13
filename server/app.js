@@ -26,11 +26,11 @@ app.use(cors())
 app.use('/img', express.static('public/images')) 
 
 //socket io server
-const io = new Server(5000, {
-    cors: {
-      origin: "http://localhost:3000",
-    },
-  });
+// const io = new Server(5000, {
+//     cors: {
+//       origin: "http://localhost:3000",
+//     },
+//   });
 
 let users = [];
 
@@ -47,9 +47,9 @@ let users = [];
 //     return users.find((user) => user.userId === userId);
 //   };
 
-io.on("connection", (socket) => { 
+// io.on("connection", (socket) => { 
     //when a user connects
-    console.log("a user has connected.") 
+    // console.log("a user has connected.") 
     // io.emit ("welcome", "Hello socket io")
     // //take userId and socketId from user
     // socket.on("addUser", (userId) => {
@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
     // });
 
 
-  });
+//   });
 
 //routes
 app.use("/users", userRoute);

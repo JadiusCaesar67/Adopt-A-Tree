@@ -1,35 +1,59 @@
+import "./commentsSection.css";
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, ListGroup } from 'react-bootstrap';
+import { 
+  Card, Form, Button, FormControl, Spinner } 
+  from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane  } from '@fortawesome/free-solid-svg-icons';
+import Comment from "./Comment";
 
-const CommentSection = ({ postId }) => {
+const CommentSection = ({ postId, ownId }) => {
   const [comments, setComments] = useState([]);
-  // const [comments, setComments] = useState([
-  //   { comment_id: 1, text: 'Awesome post!' },
-  //   { comment_id: 2, text: 'I agree' },
-  //   { comment_id: 3, text: 'I disagree' },
-  // ]);
   const [newComment, setNewComment] = useState("");
-// console.log(postId)
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [limit, setLimit] = useState(1);
+  // console.log(comments)
+
+    
   useEffect(() => {
     const fetchComments = async () => {
+      setIsLoading(true)
       try {
         const response = await fetch(
           `http://localhost:8000/comments?postId=${postId}`
         );
         const parsedResponse = await response.json();
-        console.log(parsedResponse)
         setComments(parsedResponse);
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
     };
-
+    // const interval = setInterval(() => {
+    //   fetchComments();
+    // }, 1000);
+    // return () => clearInterval(interval);
     fetchComments();
   }, [postId]);
+  
+  //loading comments
+  if (isLoading) {
+    return (
+      <div className="loading-indicator">
+          Loading...
+        </div>
+    )
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsPosting(true);
+    console.time('blocking-await')
     try {
+      console.log(postId)
+      console.log(newComment)
       const response = await fetch(`http://localhost:8000/comments`, {
         method: "POST",
         headers: {
@@ -41,57 +65,85 @@ const CommentSection = ({ postId }) => {
       const parsedResponse = await response.json();
       console.log(parsedResponse)
       setComments([...comments, parsedResponse]);
+      setIsPosting(false);
       setNewComment("");
+      console.timeEnd('blocking-await');
     } catch (error) {
       console.error(error);
     }
   };
 
+  //update comment
+
+  //Entering and newline hotkey
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      setNewComment(newComment);
+    } else if (e.key === 'Enter') {
+      handleSubmit(e);
+    }
+  };
+
+  //Show Comments
+  const handleToggleShowAll = () => {
+    setShowAll(showAll => !showAll);
+    setLimit(showAll ? 1 : comments.length);
+    // setLimit(showAll ? comments.length : 1);
+  };
+
   return (
     <>
-      {/* <h3>Comment Section</h3>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        />
-        <button type="submit">Submit</button>
-      </form> */}
-      {/* {comments.map((comment) => (
-        <div key={comment.id}>{comment.text}</div>
-      ))} */}
-    <Container>
-      <Row>
-        <Col>
-          <h4>Comments</h4>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={8}>
-          <ListGroup>
-            {comments.map((comment) => (
-              <ListGroup.Item key={comment.comment_id}>{comment.text}</ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Col>
-      </Row>
-      <Row className="my-3">
-        <Col md={8}>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group>
-              <Form.Control
-                type="text"
+        {comments.slice(0, limit).map((comment, index) => (
+          <div key={index} className="d-flex comment-section">
+            <Comment 
+              comment={comment} 
+              index={index} 
+              comments={comments} 
+              setComments={setComments} 
+              ownId={ownId}
+            />
+            </div>
+          ))}
+          {
+            comments.length && !(comments.length === 1)? (
+              <Button variant="success" className="mb-3" onClick={handleToggleShowAll}>
+                {showAll ? "View less comments" : "View more comments"}
+              </Button>
+          ) : null
+          }
+
+          {isPosting ? (
+            <Button variant="success" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Placing comment...
+          </Button>
+          ) : (
+            <Form onSubmit={handleSubmit}>
+            <Form.Group className="d-flex">
+              <FormControl
+                as="textarea"
+                style={{ resize : "none" }}
+                rows="2"
                 placeholder="Write a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
+              
+                <button type="submit" className="ml-auto btn btn-outline-success">
+                  <FontAwesomeIcon icon={faPaperPlane}/>
+                </button>
             </Form.Group>
-            <Button type="submit">Post Comment</Button>
           </Form>
-        </Col>
-      </Row>
-    </Container>
+          )}
+    
+      
     </>
   );
 };

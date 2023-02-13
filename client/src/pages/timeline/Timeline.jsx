@@ -132,6 +132,15 @@ const Timeline = ({ id, showLogin }) => {
         getPosts();
     }, [])
 
+    //Handle default textarea keys
+    // const handleKeyDown = (e) => {
+    //     if (e.key === 'Enter' && e.shiftKey) {
+    //       setNewComment(newComment);
+    //     } else if (e.key === 'Enter') {
+    //       handleSubmit(e);
+    //     }
+    //   };
+
     return(
         <>
         <main className="container">
@@ -245,7 +254,7 @@ const Timeline = ({ id, showLogin }) => {
 
             <div className="my-3 p-3 bg-body rounded shadow-sm">
             <h6 className="border-bottom pb-2 mb-0">Recent updates</h6>
-            <PostPage posts={currentPosts} loading={loading} own_id={id}/>
+            <PostPage posts={currentPosts} loading={loading} ownId={id}/>
             <Pagination
                 postsPerPage={postsPerPage}
                 totalPosts={posts.length}

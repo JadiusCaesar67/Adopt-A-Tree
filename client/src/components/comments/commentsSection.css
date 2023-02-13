@@ -1,0 +1,21 @@
+.comment-section:hover {
+  cursor: default;
+}
+
+button.comment-options-button {
+  visibility: hidden;
+  /* display: none; */
+}
+
+.d-flex:hover .comment-options-button {
+  align-items: center;
+  justify-items: left;
+  visibility: visible;
+  margin-left: 5px;
+  margin-top: 30px;
+  border-radius: 100%;
+  /* color: white; */
+}
+
+
+

@@ -24,12 +24,13 @@ const AvatarHeaders = ({ isAuth }) => {
       }
 
       useEffect(() => {
-        if (isAuth){
-            const interval = setInterval(() => {
-                getPicture()
-              }, 1000);
-              return () => clearInterval(interval);
-        }
+        // if (isAuth){
+        //     const interval = setInterval(() => {
+        //         getPicture()
+        //       }, 1000);
+        //       return () => clearInterval(interval);
+        // }
+        getPicture()
       }, [isAuth]);
 
     return (
