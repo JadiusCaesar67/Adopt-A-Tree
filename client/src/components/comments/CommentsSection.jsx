@@ -1,7 +1,7 @@
 import "./commentsSection.css";
 import React, { useState, useEffect } from "react";
 import { 
-  Card, Form, Button, FormControl, Spinner } 
+  Form, Button, FormControl, Spinner } 
   from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane  } from '@fortawesome/free-solid-svg-icons';
@@ -40,12 +40,19 @@ const CommentSection = ({ postId, ownId }) => {
     fetchComments();
   }, [postId, isPosting, deleteReloadComments]);
   
-  //loading comments
+  //loading comments w/ effect
   if (isLoading) {
     return (
-      <div className="loading-indicator">
-          Loading...
-        </div>
+      <Button variant="secondary" disabled>
+        <Spinner
+          as="span"
+          animation="grow"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+        />
+        Loading Comment Section...
+      </Button>
     )
   }
 

@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Placeholder from 'react-bootstrap/Placeholder';
 import BlankImage from '../../assets/blank-image.svg';
 
-const PostPage = ({ posts, loading, ownId }) => {
+const PostPage = ({ posts, loading, setDeleteReloadPosts, ownId }) => {
   if (loading) {
     return (
       <Card >
@@ -84,7 +84,12 @@ const PostPage = ({ posts, loading, ownId }) => {
     <>
     {posts.map ( (post, index) => (
         <div key={index} className="card my-3 p-3 bg-body rounded shadow-sm">
-            <Posts posts={post} own_id={ownId} />
+            <Posts 
+            post={post} 
+            posts={posts} 
+            setDeleteReloadPosts={setDeleteReloadPosts}
+            own_id={ownId} 
+            />
         </div>
     ))}
     </>

@@ -19,13 +19,13 @@ router.post('/test', auth, async (req, res) => {
         console.log(req.body)
         const photos = filenames.map((f) => f.filename)
         // console.log(photos)
-        const checkExisting = await pool.query(`SELECT * FROM trees WHERE name = '${name}'`)
+        const checkExistingTreeName = await pool.query(`SELECT * FROM trees WHERE name = '${name}'`)
         // console.log(tree_descr)
-        // const checkExistingDescr = await pool.query(`SELECT tree_description FROM trees WHERE name = '${name}'`)
-        // console.log(checkExisting.rows[0].name)
-        // console.log(checkExisting.rows[0].tree_description)
+        // const checkExistingTreeNameDescr = await pool.query(`SELECT tree_description FROM trees WHERE name = '${name}'`)
+        // console.log(checkExistingTreeName.rows[0].name)
+        // console.log(checkExistingTreeName.rows[0].tree_description)
 
-        if (checkExisting.rows.length === 0){
+        if (checkExistingTreeName.rows.length === 0){
             if (tree_name && tree_descr){
                 await pool.query(`
             INSERT INTO trees (name, tree_description) VALUES
@@ -34,13 +34,13 @@ router.post('/test', auth, async (req, res) => {
             }
         }
         else {
-                checkExisting.rows[0].tree_description === 0? (await pool.query(`
+                checkExistingTreeName.rows[0].treeDescription === 0? (await pool.query(`
                 UPDATE trees SET tree_description = '${tree_descr}' 
                 WHERE name = '${name}' RETURNING *
                 `)) 
                 : 
                 (await pool.query(`
-                UPDATE trees SET tree_description = '${tree_descr + ' |&&| ' + checkExisting.rows[0].tree_description}' 
+                UPDATE trees SET tree_description = '${tree_descr + ' |&&| ' + checkExistingTreeName.rows[0].treeDescription}' 
                 WHERE name = '${name}' RETURNING *
                 `))   
             }
@@ -63,54 +63,59 @@ router.post('/test', auth, async (req, res) => {
 router.post('/', auth, upload.array("photos", 3), async (req, res) => {
     try {
         const user_id = req.user.id
-        const { tree_name, tree_description, note } = req.body
+        const { tree_name, treeDescription, note } = req.body
         const rep_text_note = note.replace(/'/g, "''")
         const filenames = req.files
         const photos = filenames.map((f) => f.filename)
 
         //Check if tree name already existed
-        const checkExisting = await pool.query(`SELECT * FROM trees WHERE name = '${tree_name}'`)
+        const checkExistingTreeName = await pool.query(`SELECT * FROM trees WHERE name = '${tree_name}'`)
         // console.log(tree_descr)
-        // const checkExistingDescr = await pool.query(`SELECT tree_description FROM trees WHERE name = '${name}'`)
-        console.log(checkExisting.rows.length === null)
+        // const checkExistingTreeNameDescr = await pool.query(`SELECT tree_description FROM trees WHERE name = '${name}'`)
+        // console.log(checkExistingTreeName.rows.length === null)
         
         let tree;
         //if tree name is non existent then the new data is inserted else it would proceed to tree description
-        if (checkExisting.rows.length === 0){
-            if (tree_name && tree_description){
+        if (checkExistingTreeName.rows.length === 0){
+            if (tree_name && treeDescription){
                 tree = await pool.query(`
-                INSERT INTO trees (name, tree_description) VALUES
-                ('${tree_name}', '${tree_description}') RETURNING *
+                INSERT INTO trees (name, tree_description, created_at) VALUES
+                ('${tree_name}', '${treeDescription}', CURRENT_TIMESTAMP) RETURNING *
             `)
             } else {
                 tree = await pool.query(`
-                INSERT INTO trees (name) VALUES
-                ('${tree_name}') RETURNING *
+                INSERT INTO trees (name, created_at) VALUES
+                ('${tree_name}', CURRENT_TIMESTAMP) RETURNING *
             `)
             }
-        }
-        //check if there is content in tree description 
-        else {
-            tree =
-                checkExisting.rows[0].tree_description === null ? 
-                ( await pool.query(`
-                UPDATE trees SET tree_description = '${tree_description}' 
-                WHERE name = '${tree_name}' RETURNING *
-                `)) 
-                : 
-                (await pool.query(`
-                UPDATE trees 
-                SET tree_description = '${tree_description + 'New Info Description |&&| New Info Description' + checkExisting.rows[0].tree_description}' 
-                WHERE name = '${tree_name}' RETURNING *
-                `))
+        }   //check if there is content in tree description 
+            else if (treeDescription) {
+                tree =
+                    checkExistingTreeName.rows[0].treeDescription === null ? 
+                    ( await pool.query(`
+                        UPDATE trees 
+                        SET tree_description = '${treeDescription}', 
+                            updated_at = CURRENT_TIMESTAMP
+                        WHERE name = '${tree_name}' RETURNING *
+                    `)) 
+                    : 
+                    (await pool.query(`
+                        UPDATE trees 
+                        SET tree_description = '${treeDescription + '|&&| New Info Description |&&|' + checkExistingTreeName.rows[0].tree_description}', 
+                            updated_at = CURRENT_TIMESTAMP 
+                        WHERE name = '${tree_name}' RETURNING *
+                    `))
+            } else {
+                tree = checkExistingTreeName;
             }
+
         console.log(tree.rows[0].tree_id)
         const post = await pool.query(`
         INSERT INTO posts (user_id, post_description, pictures, tree_id, date_posted, date_edited, available) VALUES
         ('${user_id}', '${rep_text_note}', '{${photos}}', '${tree.rows[0].tree_id}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true) RETURNING *
         `)
         res.json(post.rows[0]);
-        
+        console.log(post.rows[0])
     } catch (error) {
         console.log(error.message)
     }
@@ -122,9 +127,11 @@ router.get('/', async (req, res) => {
         // const newinfo = req.user.id
         // console.log(newinfo)
         const posts = await pool.query(`
-        SELECT * FROM posts INNER JOIN
-        users ON
-        posts.user_id = users.id ORDER BY date_posted DESC`)
+            SELECT * 
+            FROM posts 
+            INNER JOIN users ON posts.user_id = users.id
+            INNER JOIN avatars ON users.id = avatars.user_id
+            ORDER BY date_posted DESC`)
         // const ids = posts.rows.map((obj) => obj);
         // console.log(ids.date_posted)
         // console.log(typeof(ids.date_posted))
@@ -168,29 +175,29 @@ router.put('/available', async (req, res) => {
     }
 })
 
-router.put('/', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
-        // const user_id = req.user.id
-        const post_id = req.query.post_id
-        const { available } = req.body
-        const availability = await pool.query(`
+        console.log(req.body)
+        const postId = req.params.id;
+        const { updatedPost } = req.body;
+        const newPost = await pool.query(`
         UPDATE posts
-        SET available = '${available}',
+        SET post_description = '${updatedPost}',
             date_edited = CURRENT_TIMESTAMP
-        WHERE post_id = '${post_id}' RETURNING *`)
+        WHERE post_id = '${postId}' RETURNING *`)
         // console.log(availability.rows[0])
-        res.json(availability.rows[0].available);
+        res.json(newPost.rows[0]);
     } catch (error) {
-        console.log(error.message)
+        res.status(500).json({ error: 'Something went wrong. Please try again later.' });
     }
 })
 
 //Delete
-router.delete('/delete', auth, async (req, res) => {
+router.delete('/delete/:id', auth, async (req, res) => {
     try {
-        const post_id = req.query.post_id
-        console.log(post_id)
-        const pg_photos = await pool.query(`SELECT pictures FROM posts WHERE post_id = '${post_id}'`)
+        const postId = req.params.id;
+        console.log(postId)
+        const pg_photos = await pool.query(`SELECT pictures FROM posts WHERE post_id = '${postId}'`)
         const photos = pg_photos.rows[0].pictures
         for (var i = 0; i < photos.length; i++) {
             console.log(photos[i])
@@ -199,13 +206,24 @@ router.delete('/delete', auth, async (req, res) => {
                 console.log(photos[i], "REMOVED");
             }
         }
-        
-        const delete_post = await pool.query(`
-        DELETE FROM posts
-        WHERE post_id IN (SELECT post_id FROM comments 
-            WHERE post_id='${post_id}') RETURNING *`)
-        res.json(delete_post.rows[0])
-        console.log(delete_post.rows[0])
+        const checkAvailableComments = await pool.query(`
+            SELECT * FROM comments WHERE post_id = ${postId}
+        `)
+
+        let deletPost;
+        if (checkAvailableComments.rows.length === 0) {
+            deletPost = await pool.query(`
+            DELETE FROM posts 
+            WHERE '${postId}' = post_id 
+            RETURNING *`
+        )} else {
+            deletPost = await pool.query(`
+                DELETE FROM posts
+                WHERE post_id IN (SELECT post_id FROM comments 
+                WHERE post_id='${postId}') 
+                RETURNING *
+        `)}
+        res.json(deletPost)
     } catch (error) {
         console.log(error.message)
     }

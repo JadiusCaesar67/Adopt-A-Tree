@@ -13,8 +13,6 @@ const Comment = ({ comment, index, comments, setComments, setDeleteReloadComment
   const [isSaving, setIsSaving] = useState(false);
   const [sureDelete, setSureDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false);
-  console.log(ownId === comment.user_id)
-  console.log(comment.user_id)
 
 //   update comment
   const handleEdit = () => {

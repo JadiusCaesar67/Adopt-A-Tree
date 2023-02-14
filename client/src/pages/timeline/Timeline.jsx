@@ -3,23 +3,24 @@ import { Link } from "react-router-dom";
 import PostPage from "../../components/posts/PostPage";
 // import Posts from "../../components/Posts";
 import { toast } from 'react-toastify';
-import Pagination from "../../components/posts/Pagination";
+// import Pagination from "../../components/posts/Pagination";
 
 const Timeline = ({ id, showLogin }) => {
-    // console.log(id)
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState(false);
     const [inputs, setInputs] = useState({
         tree_name: "",
-        tree_description: "",
+        treeDescription: "",
         note: ""
     })
     const [image, setImage] = useState({})
     const [imageDiscard, setImageDiscard] = useState("")
     const [loading, setLoading] = useState(false)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [postsPerPage] = useState(5)
+    //Page by page implementation
+    // const [currentPage, setCurrentPage] = useState(1)
+    // const [postsPerPage] = useState(5)
     const [isPosting, setIsPosting] = useState(false)
+    const [deleteReloadPosts, setDeleteReloadPosts] = useState(false)
     // console.log(image)
     // console.log((inputs.tree_name && inputs.tree_descr && inputs.note) === "" && (Object.keys(image).length === 0 && image.constructor === Object))
     //setting the inputs
@@ -42,7 +43,7 @@ const Timeline = ({ id, showLogin }) => {
         }
         setInputs({
             tree_name: "",
-            tree_description: "",
+            treeDescription: "",
             note: ""
         })
         setIsPosting(false)
@@ -50,7 +51,7 @@ const Timeline = ({ id, showLogin }) => {
         toast.warn("Changes Cleared")
     }
     
-    const { tree_name, tree_description, note } = inputs
+    const { tree_name, treeDescription, note } = inputs
     const onSubmitForm = async (e) => {
         setIsPosting(true)
         e.preventDefault()
@@ -63,12 +64,12 @@ const Timeline = ({ id, showLogin }) => {
             }
             if (tree_name !== "" ) {
                 formData.append("tree_name", tree_name.toLowerCase())
-                if (tree_description !== ""){
-                    formData.append("tree_description", tree_description)
+                if (treeDescription !== ""){
+                    formData.append("treeDescription", treeDescription)
                 }
             }
             formData.append("note", note)
-
+            console.log(formData)
             //fetch api for POST method
             const response = await fetch(
                 "http://localhost:8000/posts",
@@ -86,7 +87,7 @@ const Timeline = ({ id, showLogin }) => {
             toast.success("Posted Successfully")
             setInputs({
                 tree_name: "",
-                tree_description: "",
+                treeDescription: "",
                 note: ""
             })
             if (imageDiscard) { 
@@ -122,12 +123,12 @@ const Timeline = ({ id, showLogin }) => {
     }
 
     // Get current posts
-    const indexOfLastPost = currentPage * postsPerPage
-    const indexOfFirstPost = indexOfLastPost - postsPerPage
-    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
+    // const indexOfLastPost = currentPage * postsPerPage
+    // const indexOfFirstPost = indexOfLastPost - postsPerPage
+    // const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
 
     // Change page
-    const paginate = pageNumber => setCurrentPage(pageNumber)   
+    // const paginate = pageNumber => setCurrentPage(pageNumber)   
 
     useEffect(() => {
     //     const interval = setInterval(() => {
@@ -135,7 +136,7 @@ const Timeline = ({ id, showLogin }) => {
     //     }, 1000);
     // return () => clearInterval(interval);
         getPosts();
-    }, [newPost])
+    }, [newPost, deleteReloadPosts])
 
     //Handle default textarea keys
     // const handleKeyDown = (e) => {
@@ -163,7 +164,7 @@ const Timeline = ({ id, showLogin }) => {
             <form onSubmit={onSubmitForm}>
             <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">Post Something</h1>
-                {((inputs.tree_name || inputs.tree_description || inputs.note || imageDiscard) === "")?
+                {((inputs.tree_name || inputs.treeDescription || inputs.note || imageDiscard) === "")?
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 :
                 <button type="button" className="btn-close" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -186,11 +187,11 @@ const Timeline = ({ id, showLogin }) => {
                 <div className="form-floating mb-4">
                     <input
                         type="text"
-                        id="tree_description"
-                        name="tree_description"
+                        id="treeDescription"
+                        name="treeDescription"
                         placeholder="Optional"
                         className="form-control"
-                        value={tree_description}
+                        value={treeDescription}
                         onChange={e => onChange(e)} />
                     <label className="form-label" htmlFor="form2Example1">Tree Description</label>
                 </div>
@@ -215,7 +216,7 @@ const Timeline = ({ id, showLogin }) => {
       </div>
       <div className="modal-footer">
         {
-            ( inputs.note || inputs.tree_name || inputs.tree_description || imageDiscard) !== ""? 
+            ( inputs.note || inputs.tree_name || inputs.treeDescription || imageDiscard) !== ""? 
             (
                 <>
                 <button type="reset" className="btn btn-secondary" onClick={handleDiscard}>Clear Changes</button>
@@ -268,12 +269,17 @@ const Timeline = ({ id, showLogin }) => {
 
             <div className="my-3 p-3 bg-body rounded shadow-sm">
             <h6 className="border-bottom pb-2 mb-0">Recent updates</h6>
-            <PostPage posts={currentPosts} loading={loading} ownId={id}/>
-            <Pagination
+            <PostPage 
+                posts={posts} 
+                loading={loading} 
+                setDeleteReloadPosts={setDeleteReloadPosts} 
+                ownId={id}
+            />
+            {/* <Pagination
                 postsPerPage={postsPerPage}
                 totalPosts={posts.length}
                 paginate={paginate}
-            />
+            /> */}
             </div>
             
         </main>
