@@ -1,20 +1,33 @@
-import React, {  useState  } from "react";
-import { Link } from "react-router-dom";
+import React, {  useState, useEffect  } from "react";
 import { toast } from 'react-toastify';
 import './login.css'
 const Login = ({ setAuth, setShowLoginForm }) => {
     const [ inputs, setInputs ] = useState ({
         username: "",
         password: "",
+        rememberMe: false, // added rememberMe field to component state
     })
     
+    // set the state of the checkbox when the component loads
+    useEffect(() => {
+        const rememberMe = localStorage.getItem("rememberMe") === "true";
+        setInputs(inputs => ({ ...inputs, rememberMe }));
+    }, []);
+
+    // update the state of the checkbox when it is clicked
+    const onRememberMeChange = e => {
+        const rememberMe = e.target.checked;
+        setInputs(inputs => ({ ...inputs, rememberMe }));
+        localStorage.setItem("rememberMe", rememberMe); // store the state in localStorage
+    };
+
     //setting the inputs so that all previous input would be brought up
     const onChange = e => {
         setInputs({ ...inputs, [e.target.name] : e.target.value})
     }
 
     //define the username and password variable from the inputs
-    const { username, password } = inputs
+    const { username, password, rememberMe } = inputs
 
     const onSubmitForm = async (e) => {
         e.preventDefault()
@@ -50,12 +63,7 @@ const Login = ({ setAuth, setShowLoginForm }) => {
             toast.error(parseRes)
             // console.log("Something went wrong or wrong credentials")
         }
-
-        setTimeout(() => {
-            // window.location.reload(false)
-        }, 100);
         }
-
         catch (error) {
             toast.error("Password or Username is Incorrect")
             console.error(error.message)
@@ -93,9 +101,15 @@ return (
                     onChange={e => onChange(e)} />
                     <label className="form-label" htmlFor="form2Example2">Password</label>
                 </div>
+
+             {/* "Remember me" checkbox */}
             <div className="checkbox mb-3">
                 <label>
-                    <input type="checkbox" value="remember-me"/> Remember me
+                    <input type="checkbox"
+                            checked={rememberMe}
+                            onChange={onRememberMeChange}
+                        /> 
+                        Remember me
                 </label>
             </div>
             

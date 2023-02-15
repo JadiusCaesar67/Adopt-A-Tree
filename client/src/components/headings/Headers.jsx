@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate  } from 'react-router-dom';
 import Logo from "../../assets/adopt-a-tree-logo-img.png"
 import AvatarHeaders from "./AvatarHeaders";
@@ -33,7 +33,7 @@ const Headers = ({ isAuth, setAuth, showLogin }) => {
             <ul id="header_nav" className="nav col-lg-auto me-md-auto mb-2 justify-content-center mb-md-0">
               <li><a href="/" className="button_headers px-2 rounded-pill">Home</a></li>
               <li><a href="/timeline" className="button_headers px-2">Timeline</a></li>
-              <li><a href="/" className="button_headers px-2">Help</a></li>
+              {/* <li><a href="/" className="button_headers px-2">Help</a></li> */}
             </ul>
             {/* <form className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-5">
               <input type="search" className="form-control" placeholder="Search..." aria-label="Search" />

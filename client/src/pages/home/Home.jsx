@@ -16,7 +16,8 @@ import barGraph from "../../assets/bar_graph.png"
 import youthMovement from "../../assets/GenerationsAndClimate_featured.jpg"
 import womanPhone from "../../assets/woman_using_phone.jpg"
 import oldman from "../../assets/Old_person_using_laptop.jpg"
-const Home = () => {
+const Home = ({ isAuthenticated }) => {
+  console.log(isAuthenticated)
     return (
 <main>
 
@@ -35,6 +36,7 @@ const Home = () => {
 
       <div className="container">
         <div className="carousel-caption text-start">
+          {!isAuthenticated && (<p><a className="btn btn-lg btn-success" href="/register">Sign Up Now</a></p>)}
         </div>
       </div>
     </div>
@@ -73,7 +75,7 @@ const Home = () => {
         <div className="carousel-caption">
           <h1>Replenish the Earth by adopting a tree</h1>
           <p></p>
-          <p><a className="btn btn-lg btn-primary" href="/register">Sign Up Now</a></p>
+          {!isAuthenticated && (<p><a className="btn btn-lg btn-primary" href="/register">Sign Up Now</a></p>)}
         </div>
       </div>
     </div>

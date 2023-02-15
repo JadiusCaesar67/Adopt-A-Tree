@@ -5,7 +5,7 @@ import { Modal, Button, Spinner }
 
 const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
     const [postContent, setPostContent] = useState(post.post_description);
-    const [editedPost, setEditedPost] = useState([])
+    // const [editedPost, setEditedPost] = useState([])
     const [profilePic, setProfilePic] = useState(post.avatar);
     const [loading, setLoading] = useState(false);
     const [ownId, setOwnId] = useState(own_id);
@@ -67,8 +67,8 @@ const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
                     body: JSON.stringify({ updatedPost: postContent })
                 }
             );
-            const parseRes = await response.json();
-            setEditedPost(parseRes);
+            // const parseRes = await response.json();
+            // setEditedPost(parseRes);
             setIsEditing(false);
             setIsSaving(false);
         } catch (error) {

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import "./login.css"
 
 const Registration = ({ setAuth }) => {
-    const [ state, setState ] = useState({})
+    // const [ state, setState ] = useState({})
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -17,7 +17,7 @@ const Registration = ({ setAuth }) => {
             gender: e.target.gender.value,
             address: e.target.address.value
         }
-        setState(newState)
+        // setState(newState)
         // console.log(newState)
 
         const response = await fetch (
@@ -46,7 +46,7 @@ const Registration = ({ setAuth }) => {
         } catch (error) {
             console.log(error.message)
         }
-        e.target.reset() 
+        // e.target.reset() 
     }
     
     return (

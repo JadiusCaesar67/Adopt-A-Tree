@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import PostPage from "../../components/posts/PostPage";
-// import Posts from "../../components/Posts";
 import { toast } from 'react-toastify';
 // import Pagination from "../../components/posts/Pagination";
 
@@ -23,7 +22,6 @@ const Timeline = ({ id, showLogin, isAuthenticated }) => {
     const [isPosting, setIsPosting] = useState(false)
     const [deleteReloadPosts, setDeleteReloadPosts] = useState(false)
     const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated)
-    const location = useLocation();
     //setting the inputs
     const onChange = e => {//post_type     : post   
         setInputs({ ...inputs, [e.target.name]: e.target.value })
@@ -38,10 +36,6 @@ const Timeline = ({ id, showLogin, isAuthenticated }) => {
     // }
     
     useEffect(() => {
-        // if (location.pathname === "/timeline") {
-            // console.log("User navigated to the timeline page");
-            // Do something here when the user navigates to the page
-        //   }
         if (isAuthenticated){
             setIsLoggedIn(true);
         } else {

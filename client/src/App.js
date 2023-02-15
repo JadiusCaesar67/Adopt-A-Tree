@@ -84,7 +84,7 @@ function App() {
         <Headers isAuth={isAuthenticated} setAuth={setAuth} showLogin={handleShow} />
         <div>
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route exact path="/" element={<Home isAuthenticated={isAuthenticated} />} />
             <Route exact path='/login' element={<Login />} />
             <Route exact path='/register' element={!isAuthenticated ? (<Registration setAuth={setAuth}/> ): (
               <Navigate to='/profile'/>
@@ -93,13 +93,13 @@ function App() {
             {/* <Route exact path='/timeline' element={isAuthenticated ? (<Timeline id={id}/> ): (
               handleShow
             ) }></Route> */}
-            <Route exact path='/messenger' element={isAuthenticated ? (<Messenger /> ): (
+            {/* <Route exact path='/messenger' element={isAuthenticated ? (<Messenger /> ): (
               <Navigate to='/login'/>
-            ) }></Route>
+            ) }></Route> */}
             {/* <Route exact path='/profile' element={isAuthenticated ? (<Profile setAuth={setAuth}/> ): (
               <Navigate to='/login'/>
             ) }></Route> */}
-            {/* <Route exact path="/messenger" element={<Messenger/>} /> */}
+            <Route exact path="/messenger" element={<Messenger/>} />
             <Route exact path='/profile' element={<Profile setAuth={setAuth}/>} />
             <Route path="*" element={<Test />} />
           </Routes>
