@@ -1,16 +1,24 @@
 // import { response } from "express"
-import React, { useEffect, useState } from "react"
-import UploadAvatar from "../../components/profile/UploadAvatar"
-import ProfilePic from "../../components/profile/ProfilePic"
-import "./profile.css"
-import OwnPosts from "../../components/profile/OwnPosts"
+import React, { useEffect, useState } from "react";
+import { useNavigate  } from 'react-router-dom';
+import { toast } from "react-toastify";
+import "./profile.css";
+import OwnPosts from "../../components/profile/OwnPosts";
+import ProfileSection from "../../components/profile/ProfileSection";
 
-const Profile = () => {
-    const [ user, setUser ] = useState("")
-    const [ posts, setPosts ] = useState("")
+const Profile = ({ setAuth }) => {
+    const [ user, setUser ] = useState("");
+    const [ ownPosts, setOwnPosts ] = useState("");
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [loadingAvatar, setloadingAvatar] = useState(false)
+    const [deleteReloadPosts, setDeleteReloadPosts] = useState(false)
+    const navigate = useNavigate();
 
     const getProfile = async () => {
         try {
+            setloadingAvatar(true)
             const response = await fetch(
                 "http://localhost:8000/profile", 
                 {
@@ -22,10 +30,9 @@ const Profile = () => {
             )
             const parseRes = await response.json()
             setUser(parseRes)
-        }
-
-        catch (error) {
-            console.log("something went wrong")
+            setloadingAvatar(false)
+        } catch (error) {
+            console.error(error)
         }
     }
 
@@ -41,10 +48,8 @@ const Profile = () => {
                 }
             )
             const parseRes = await response.json()
-            setPosts(parseRes)
-        }
-
-        catch (error) {
+            setOwnPosts(parseRes)
+        } catch (error) {
             console.log("something went wrong")
         }
     }
@@ -52,69 +57,98 @@ const Profile = () => {
     useEffect(() => {
         getProfile()
         getOwnPosts()
-    }, [])
+    }, [isUpdating, deleteReloadPosts]) 
+    //`isUpdating` & `deleteReloadPosts` is needed to re-render the whole data because the `handleUpdateProfile` will only fetch `users` table
+
+    const handleUpdateProfile = async (formData) => {
+        try {
+            // console.log(formData)
+            setShowEditForm(true)
+            setIsUpdating(true)
+            const response = await fetch(
+                "http://localhost:8000/profile/edit",
+                {
+                    method: "PUT", 
+                    headers: { 
+                        Authorization: "Bearer " + localStorage.getItem("token"),
+                        "Content-type" : "application/json"
+                      },
+                      body: JSON.stringify({ formData })
+                })
+            const parsedResponse = await response.json()
+            setUser(parsedResponse)
+            toast.success("Changes saved")
+            setIsUpdating(false)
+            setShowEditForm(false)
+        } catch (error) {
+            toast.error("No changes are made...")
+            console.error(error)
+        }
+        
+    }
+
+    const handleDeleteUser = async () => {
+        if (window.confirm('Are you really sure you want to delete your account? This action cannot be undone.')) {
+            try {
+                setIsDeleting(true)
+                const response = await fetch(
+                    "http://localhost:8000/profile/delete",
+                    {
+                        method: "DELETE", 
+                        headers: { 
+                            Authorization: "Bearer " + localStorage.getItem("token")
+                          },
+                    })
+                // const parsedResponse = await response.json()
+                // console.log(parsedResponse)
+                if (response.ok) {
+                    setIsDeleting(false);
+                    toast.error("Account Deleted")
+                    // Navigate to homepage
+                    setTimeout(() => {
+                        localStorage.removeItem('token');
+                        setAuth(false);
+                        navigate('/');
+                        window.location.reload(false);
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }}
 
     return (
         <>
-            <header className="masthead col bg-primary text-white">
+        <header className="masthead col">
             <div className="row">
-            <div className="container col ms-5">
-                {/* <!-- Masthead Avatar Image--> */}
-                <div className="card rounded-circle" style={{ width: 18 + 'rem', height: 18 + 'rem' }}>
-                    <ProfilePic/>
+                <div className="container col me-sm-5">
+                    <ProfileSection 
+                        profile={user} 
+                        loadingAvatar={loadingAvatar}
+                        setShowEditForm={setShowEditForm} 
+                        showEditForm={showEditForm}
+                        isUpdating={isUpdating}
+                        handleDeleteUser={handleDeleteUser}
+                        isDeleting={isDeleting}
+                        handleUpdateProfile={handleUpdateProfile}
+                    />
                 </div>
-                <UploadAvatar getId = {user.id}/>
-                {/* <!-- Masthead Heading--> */}
-                <div className="m-2">
-                <h1 className="fw-bold mb-0">{user.first_name} {user.last_name}</h1>
-                <h2 className="mb-0">{user.username}</h2>
-                </div>
-                {/* <!-- Bio Subheading--> */}
-                <p className="masthead-subheading font-weight-light pt-4 mb-0">For user Bio or About Me; feature not yet available</p>
-            </div>
-
             {/* <!-- Posts Section--> */}
-        <section className="page-section col bg-primary text-black mb-0" id="about">
-            <div className="container">
-                {/* <!-- Posts Section Heading--> */}
-                <h2 className="page-section-heading text-center text-uppercase text-white">Posts</h2>
-                <div className="card">
-                    <div className="card-body">
-                    {
-                        posts? (posts.map ( (posts, index) => (
-                            <div key={index}>
-                                <OwnPosts posts={posts}/>
+            {
+                !showEditForm && (
+                    <section className="page-section col bg-primary text-black mb-0 me-sm-5" id="about">
+                        <div className="container">
+                            {/* <!-- Posts Section Heading--> */}
+                            <h2 className="page-section-heading text-center text-uppercase text-white">Posts</h2>
+                            <div className="card">
+                                <div className="card-body">
+                                <OwnPosts posts={ownPosts} avatar={user.avatar} setDeleteReloadPosts={setDeleteReloadPosts} id={user.id}/>
+                                </div>
                             </div>
-                        ))) : (
-                            <>
-                        <p className="card-text placeholder-glow">
-                            <span className="placeholder col-7"></span>
-                            <span className="placeholder col-4"></span>
-                            <span className="placeholder col-4"></span>
-                            <span className="placeholder col-6"></span>
-                            <span className="placeholder col-8"></span>
-                        </p>
-                        <p className="card-text placeholder-glow">
-                            <span className="placeholder col-7"></span>
-                            <span className="placeholder col-4"></span>
-                            <span className="placeholder col-4"></span>
-                            <span className="placeholder col-6"></span>
-                            <span className="placeholder col-8"></span>
-                        </p>
-                        <p className="card-text placeholder-glow">
-                            <span className="placeholder col-7"></span>
-                            <span className="placeholder col-4"></span>
-                            <span className="placeholder col-4"></span>
-                            <span className="placeholder col-6"></span>
-                            <span className="placeholder col-8"></span>
-                        </p>
-                        </>
-                        )
-                    }
-                    </div>
-                </div>
-            </div>
-        </section>
+                        </div>
+                    </section>
+                    )
+            }
             </div>
         </header>
         </>

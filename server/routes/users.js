@@ -1,10 +1,18 @@
 // const User = require("../models/User");
-import  bcrypt  from  "bcryptjs"
 import express from "express";
 import { connectDatabase } from  "../pool.js";
+import { auth } from  "../middleware/auth.js";
 const router = express.Router();
-const  pool = connectDatabase()
+const  pool = connectDatabase();
 
+router.get('/ownId', auth, async (req, res) => {
+  try {
+      res.json(req.user.id)
+      // res.json(req.user)
+  } catch (error) {
+      console.error(error.message);
+  }
+})
 // //update user
 // router.put("/:id", async (req, res) => {
 //   if (req.body.userId === req.params.id || req.body.isAdmin) {
@@ -66,8 +74,21 @@ router.get("/", async (req, res) => {
     const user = userId
       ? await pool.query(`SELECT * FROM users WHERE id = '${userId}'`)
       : await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
-    const { password, updatedAt, ...other } = user.rows;
+    const { password, ...other } = user.rows;
     res.status(200).json(other);
+    // console.log(other)
+    // res.status(200).json(userId);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/user", auth, async (req, res) => {
+  try {
+    // const user = await pool.query(
+    //   `SELECT * FROM users 
+    //   WHERE username = '${username}'`)
+    res.status(200).json(req.user);
     // console.log(other)
     // res.status(200).json(userId);
   } catch (err) {

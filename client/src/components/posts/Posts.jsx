@@ -3,7 +3,7 @@ import CommentSection from "../comments/CommentsSection";
 import { Modal, Button, Spinner } 
   from 'react-bootstrap';
 
-const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
+const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
     const [postContent, setPostContent] = useState(post.post_description);
     const [editedPost, setEditedPost] = useState([])
     const [profilePic, setProfilePic] = useState(post.avatar);
@@ -15,17 +15,22 @@ const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
     const [isSaving, setIsSaving] = useState(false);
     const [sureDelete, setSureDelete] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const friendId = post.user_id;
-    console.log(post)
     
     useEffect(() => {
-      setProfilePic(post.avatar)
-    }, [post.avatar])
+        if (post.avatar) {
+            setProfilePic(`http://localhost:8000/img/${post.avatar}`)
+        } else if (avatar) {
+            setProfilePic(`http://localhost:8000/img/${avatar}`)
+        } else {
+            setProfilePic("https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g")
+        }
+    }, [post])
     
     const onClickMessage = async () => {
+    const othersId = post.user_id;
         try {
             const senderId = own_id
-            const receiverId = friendId
+            const receiverId = othersId
             const body = { senderId, receiverId }
             const response = await fetch(
                 "http://localhost:8000/conversations/",
@@ -111,7 +116,6 @@ const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
 
     //Delete Post
     const deletePost = async () => {
-        console.log(post.post_id)
         try {
             setIsDeleting(true);
             const response = await fetch(
@@ -128,7 +132,6 @@ const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
                 setIsDeleting(false);
                 setDeleteReloadPosts(true)
                 }
-            console.log(parsedResponse)
         } catch (error) {
             console.log(error.message)
         }}
@@ -163,10 +166,7 @@ const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
         <>
         <div className="card-body">
         <div className="modal-header">
-        <img src={profilePic? 
-            `http://localhost:8000/img/${profilePic}`
-             : 
-            "https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g"} 
+        <img src={profilePic} 
             alt="" className="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" focusable="false"
         />
         {
@@ -241,7 +241,16 @@ const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
         </Modal>
         
         </div>
-        <button type="button" className="btn btn-info mt-2" onClick={onClickMessage}>Message</button>
+        {
+            ownId !== post.user_id &&
+            <button 
+                type="button" 
+                className="btn btn-info mt-2" 
+                onClick={onClickMessage}
+            >Message
+            </button>
+        }
+    
         <strong className="d-block text-gray-dark fw-bold">{post.username}</strong>
         <div className="pb-3 mb-0 small lh-sm border-bottom">
             {
@@ -280,12 +289,20 @@ const Posts = ({ post, posts, setDeleteReloadPosts, own_id }) => {
                     <dd className="card-text fs-4">{postContent}</dd>
                 )
             }
-        
-            {post.pictures.map ( (pics, post) => (
-                <div key={post} className="col my-2 p-2 bg-body rounded shadow-sm">
-                    <img src={`http://localhost:8000/img/${pics}`} width="240px" height="240px" alt=""/>
+            <div className="row justify-content-sm-start">
+            {   
+                post.pictures.map ( (pics, post) => (
+                <div key={post} 
+                className="col-md-3 my-2 p-2 bg-body rounded shadow-sm">
+                    <img 
+                        src={`http://localhost:8000/img/${pics}`} 
+                        width="240px" 
+                        height="240px" 
+                        alt=""
+                        className="img-fluid"/>
                 </div>
             ))}
+            </div>
             <time>
                 {hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}
             </time>

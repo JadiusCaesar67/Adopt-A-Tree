@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation  } from "react-router-dom";
 import PostPage from "../../components/posts/PostPage";
 // import Posts from "../../components/Posts";
 import { toast } from 'react-toastify';
 // import Pagination from "../../components/posts/Pagination";
 
-const Timeline = ({ id, showLogin }) => {
+const Timeline = ({ id, showLogin, isAuthenticated }) => {
+    console.log(id, isAuthenticated)
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState(false);
     const [inputs, setInputs] = useState({
@@ -21,8 +22,8 @@ const Timeline = ({ id, showLogin }) => {
     // const [postsPerPage] = useState(5)
     const [isPosting, setIsPosting] = useState(false)
     const [deleteReloadPosts, setDeleteReloadPosts] = useState(false)
-    // console.log(image)
-    // console.log((inputs.tree_name && inputs.tree_descr && inputs.note) === "" && (Object.keys(image).length === 0 && image.constructor === Object))
+    const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated)
+    const location = useLocation();
     //setting the inputs
     const onChange = e => {//post_type     : post   
         setInputs({ ...inputs, [e.target.name]: e.target.value })
@@ -35,6 +36,18 @@ const Timeline = ({ id, showLogin }) => {
     // const fileSelectedHandler = (e) => {
     //     setImage({ files: [...this.state.files, ...e.target.files] })
     // }
+    
+    useEffect(() => {
+        // if (location.pathname === "/timeline") {
+            // console.log("User navigated to the timeline page");
+            // Do something here when the user navigates to the page
+        //   }
+        if (isAuthenticated){
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false)
+        }
+    }, [id, isAuthenticated, showLogin])
     
     const handleDiscard = () => {
         if (imageDiscard) {
@@ -56,7 +69,7 @@ const Timeline = ({ id, showLogin }) => {
         setIsPosting(true)
         e.preventDefault()
         try {
-                //making a body object from the values of username and password
+            //making a body object from the values of username and password
             // const body = { tree_name, tree_descr, note }
             let formData = new FormData()
             for (var i = 0; i < image.length; i++) {
@@ -121,7 +134,6 @@ const Timeline = ({ id, showLogin }) => {
             console.log(error.message)
         }
     }
-
     // Get current posts
     // const indexOfLastPost = currentPage * postsPerPage
     // const indexOfFirstPost = indexOfLastPost - postsPerPage
@@ -131,10 +143,6 @@ const Timeline = ({ id, showLogin }) => {
     // const paginate = pageNumber => setCurrentPage(pageNumber)   
 
     useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         getPosts();
-    //     }, 1000);
-    // return () => clearInterval(interval);
         getPosts();
     }, [newPost, deleteReloadPosts])
 
@@ -146,14 +154,15 @@ const Timeline = ({ id, showLogin }) => {
     //       handleSubmit(e);
     //     }
     //   };
-
+    
     return(
         <>
         <main className="container">
         <div className="my-3 p-3 bg-body rounded shadow-sm">
         <h1>Posts</h1>
         {
-            id? <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
+            isLoggedIn ? 
+            <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
             Post Something
             </button> : <><Link onClick={showLogin}>Login</Link> or <Link to="/register">Register</Link> to Post Here</>
         }

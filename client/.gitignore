@@ -10,6 +10,7 @@
 /src/setupTests.js
 /src/App.test.js
 /src/pages/home/test.html
+/src/components/profile/SubComponents.jsx
 
 # production
 /build

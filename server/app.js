@@ -8,10 +8,11 @@ import cors from "cors";
 // import { createServer } from "http";
 import { Server } from "socket.io";
 import userRoute from "./routes/users.js";
+import profileRoute from "./routes/profile.js";
 import conversationRoute from "./routes/conversation.js";
 import messageRoute from "./routes/messages.js";
 import photosRoute from "./routes/photos.js";
-import postsRoute from "./routes/post.js";
+import postsRoute from "./routes/posts.js";
 import commentsRoute from "./routes/comments.js";
 
 const  pool = connectDatabase()
@@ -98,11 +99,12 @@ let users = [];
 
 //routes
 app.use("/users", userRoute);
-app.use("/photos", photosRoute)
-app.use("/posts", postsRoute)
-app.use("/comments", commentsRoute)
-app.use("/conversations", conversationRoute)
-app.use("/messages", messageRoute)
+app.use("/profile", profileRoute);
+app.use("/photos", photosRoute);
+app.use("/posts", postsRoute);
+app.use("/comments", commentsRoute);
+app.use("/conversations", conversationRoute);
+app.use("/messages", messageRoute);
 
 
 // provide the auth middleware for verification
@@ -181,18 +183,7 @@ app.post('/login', async (req, res) => {
         res.json({ msg: error.message })
     }
 })
- 
-app.get('/profile', auth, async (req, res) => {
-    try {
-        // const { username, firstname, lastname, email, gender, address, user_type } = req.body
-        //return the user object
-        // console.log(req.user)
-        
-        res.json(req.user)
-    } catch (error) {
-        console.error(error.message);
-    }
-})
+
 
 // server.listen(5000, () => {
 //     console.log('Server io listening on http://localhost:5000');

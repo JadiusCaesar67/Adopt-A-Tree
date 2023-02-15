@@ -2,7 +2,7 @@ import React, {  useState  } from "react";
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import './login.css'
-const Login = ({ setAuth }) => {
+const Login = ({ setAuth, setShowLoginForm }) => {
     const [ inputs, setInputs ] = useState ({
         username: "",
         password: "",
@@ -40,6 +40,7 @@ const Login = ({ setAuth }) => {
                 
         if (parseRes.token) {
             //for in local storage
+            setShowLoginForm(false)
             localStorage.setItem("token", parseRes.token)
             setAuth(true)
             toast.success("Login Successful")
@@ -51,14 +52,13 @@ const Login = ({ setAuth }) => {
         }
 
         setTimeout(() => {
-            window.location.reload(false)
+            // window.location.reload(false)
         }, 100);
         }
 
         catch (error) {
             toast.error("Password or Username is Incorrect")
-            console.log(error.message)
-            console.log(error)
+            console.error(error.message)
             }
     }
 

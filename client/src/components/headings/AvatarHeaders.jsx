@@ -18,18 +18,12 @@ const AvatarHeaders = ({ isAuth }) => {
             setProfilePic(`http://localhost:8000/img/${parseRes}`)
             
         } catch (error) {
-            // console.log(error)
-            // setProfilePic(`https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g`)
+            console.error(error.message)
+            setProfilePic(`https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g`)
         }
       }
 
       useEffect(() => {
-        // if (isAuth){
-        //     const interval = setInterval(() => {
-        //         getPicture()
-        //       }, 1000);
-        //       return () => clearInterval(interval);
-        // }
         getPicture()
       }, [isAuth]);
 

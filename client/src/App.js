@@ -28,10 +28,10 @@ function App() {
     setIsAuthenticated(boolean)
   };
   //Login modal
-  const [show, setShow] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowLoginForm(false);
+  const handleShow = () => setShowLoginForm(true);
 
   const checkAuthenticated = async () => {
     try {
@@ -42,25 +42,22 @@ function App() {
           Authorization: "Bearer " + localStorage.getItem("token")
         }
       });
-    
       const parseRes = await response.json()
-
-      // console.log(parseRes)
       parseRes === true ? 
       setIsAuthenticated(true)
       :
-      setIsAuthenticated(false)
+      setIsAuthenticated(false);
     }
     catch (err){
       // console.error(err.message)
     }
   }
 
-  const getProfile = async () => {
+  const getOwnId = async () => {
     // console.log(localStorage.getItem("token"))
     try {
         const response = await fetch(
-            "http://localhost:8000/profile", 
+            "http://localhost:8000/users/ownId", 
             {
                 method: "GET", 
                 headers: { 
@@ -69,51 +66,49 @@ function App() {
             }
         )
         const parseRes = await response.json()
-        setId(parseRes.id)
+        setId(parseRes)
         // console.log(id)
           }catch (error) {
-            console.log("something went wrong")
+            console.error(error.message)
         }
     }
   useEffect( () => {
     checkAuthenticated();
-    getProfile();
+    getOwnId();
   }, []);
 
   return (
     //router to redirect and check authentication
     <div className="App">
-      <Headers isAuth={isAuthenticated} setAuth={setAuth} showLogin={handleShow} />
       <Router>
-        <div >
+        <Headers isAuth={isAuthenticated} setAuth={setAuth} showLogin={handleShow} />
+        <div>
           <Routes>
             <Route exact path="/" element={<Home />} />
-            <Route exact path='/login' element={!isAuthenticated ? (<Login setAuth={setAuth}/> ): (
-              <Navigate to='/messenger'/>
-            ) } ></Route>
+            <Route exact path='/login' element={<Login />} />
             <Route exact path='/register' element={!isAuthenticated ? (<Registration setAuth={setAuth}/> ): (
-              <Navigate to='/timeline'/>
+              <Navigate to='/profile'/>
             ) }></Route>
-            <Route exact path="/timeline" element={<Timeline id={id} showLogin={handleShow} />} />
+            <Route exact path="/timeline" element={<Timeline id={id} showLogin={handleShow} isAuthenticated={isAuthenticated}/>} />
             {/* <Route exact path='/timeline' element={isAuthenticated ? (<Timeline id={id}/> ): (
               handleShow
             ) }></Route> */}
             <Route exact path='/messenger' element={isAuthenticated ? (<Messenger /> ): (
               <Navigate to='/login'/>
             ) }></Route>
-            {/* <Route exact path='/profile' element={isAuthenticated ? (<Profile /> ): (
+            {/* <Route exact path='/profile' element={isAuthenticated ? (<Profile setAuth={setAuth}/> ): (
               <Navigate to='/login'/>
             ) }></Route> */}
             {/* <Route exact path="/messenger" element={<Messenger/>} /> */}
-            <Route exact path='/profile' element={<Profile />} />
+            <Route exact path='/profile' element={<Profile setAuth={setAuth}/>} />
             <Route path="*" element={<Test />} />
           </Routes>
         </div>
       </Router>
-      <Modal show={show} backdrop="static" onHide={handleClose}>
+      <Modal show={showLoginForm} backdrop="static" onHide={handleClose}>
         <Modal.Header closeButton />
-        <Login setAuth={setAuth} />
-      </Modal>
+          <Login setAuth={setAuth} setShowLoginForm={setShowLoginForm}/>
+        </Modal>
       <ToastContainer />
     </div>
   );

@@ -99,7 +99,7 @@ const Registration = ({ setAuth }) => {
             <input type="submit" value="Register" className="btn btn-primary"/>
         </form>
         <h5>Already have an account?</h5>
-        <Link to="/login" className="btn btn-outline-success">Login Here</Link>
+        <Link to="/login" className="btn btn-outline-success mb-5">Login Here</Link>
         </div>
         </section>
         </header>

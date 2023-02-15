@@ -81,8 +81,7 @@ const Comment = ({ comment, index, comments, setComments, setDeleteReloadComment
         setIsDeleting(false);
         setDeleteReloadComments(true)
       }
-      const parseRes = await response.json()
-      console.log(parseRes)
+      // const parseRes = await response.json()
     } catch (error) {
         console.log(error.message)
     }
@@ -150,10 +149,10 @@ const Comment = ({ comment, index, comments, setComments, setDeleteReloadComment
               <>
               <strong>Are you sure you want to delete this comment?</strong>
               <Button variant="success" className="ml-auto" onClick={handleSureDelete}>
-                <FontAwesomeIcon icon={faCheck} />
+                <FontAwesomeIcon icon={faCheck} /> Yes
               </Button>
               <Button variant="danger" onClick={handleCancel}>
-                <FontAwesomeIcon icon={faTimes} />
+                <FontAwesomeIcon icon={faTimes} /> No
               </Button>
             </>
             ) : null

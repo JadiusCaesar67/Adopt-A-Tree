@@ -109,13 +109,13 @@ router.post('/', auth, upload.array("photos", 3), async (req, res) => {
                 tree = checkExistingTreeName;
             }
 
-        console.log(tree.rows[0].tree_id)
+        // console.log(tree.rows[0].tree_id)
         const post = await pool.query(`
         INSERT INTO posts (user_id, post_description, pictures, tree_id, date_posted, date_edited, available) VALUES
         ('${user_id}', '${rep_text_note}', '{${photos}}', '${tree.rows[0].tree_id}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true) RETURNING *
         `)
         res.json(post.rows[0]);
-        console.log(post.rows[0])
+        // console.log(post.rows[0])
     } catch (error) {
         console.log(error.message)
     }
@@ -127,10 +127,10 @@ router.get('/', async (req, res) => {
         // const newinfo = req.user.id
         // console.log(newinfo)
         const posts = await pool.query(`
-            SELECT * 
+            SELECT posts.*, users.username, avatars.avatar 
             FROM posts 
             INNER JOIN users ON posts.user_id = users.id
-            INNER JOIN avatars ON users.id = avatars.user_id
+            LEFT JOIN avatars ON users.id = avatars.user_id
             ORDER BY date_posted DESC`)
         // const ids = posts.rows.map((obj) => obj);
         // console.log(ids.date_posted)
@@ -145,7 +145,6 @@ router.get('/', async (req, res) => {
 router.get('/own-posts', auth, async (req, res) => {
     try {
         const user_id = req.user.id
-        console.log(user_id)
         const posts = await pool.query(`
         SELECT * FROM posts 
         WHERE user_id = '${user_id}' 
@@ -197,8 +196,8 @@ router.delete('/delete/:id', auth, async (req, res) => {
     try {
         const postId = req.params.id;
         console.log(postId)
-        const pg_photos = await pool.query(`SELECT pictures FROM posts WHERE post_id = '${postId}'`)
-        const photos = pg_photos.rows[0].pictures
+        const checkExistingPhotos = await pool.query(`SELECT pictures FROM posts WHERE post_id = '${postId}'`)
+        const photos = checkExistingPhotos.rows[0].pictures
         for (var i = 0; i < photos.length; i++) {
             console.log(photos[i])
             if (existsSync(`./public/images/${photos[i]}`)) {

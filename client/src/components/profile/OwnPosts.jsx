@@ -1,24 +1,89 @@
-const OwnPosts = ({ posts }) => {
-    const d = new Date(posts.date_posted)
-    const date = d.toString();
-    const hours = date.substring(16, 18)
-    const meridiem = hours >= 12 ? 'PM' : 'AM'
-    const hour = (hours % 12) || 12
+import React from "react";
+import Posts from '../posts/Posts.jsx'
+import { Card, Placeholder } from 'react-bootstrap';
+import BlankImage from '../../assets/blank-image.svg';
+
+const OwnPosts = ({ posts, avatar, setDeleteReloadPosts, id }) => {
+  if (!posts) {
+      return (
+        <Card >
+          <Card.Body>
+            <div className='d-flex my-3 p-3'>
+              <div className='me-auto'>
+                <Card.Img src={BlankImage} style={{ width: '32px' }} /> 
+              </div>
+              <div className='d-flex'>
+                <Placeholder.Button variant="success" xs={6} style={{ width: '60px', height: '20px' }} />
+              </div>
+            </div>
+            <Placeholder as={Card.Title} animation="glow">
+              <Placeholder xs={6} />
+            </Placeholder>
+            <Placeholder as={Card.Text} animation="glow">
+              <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+              <Placeholder xs={6} /> <Placeholder xs={8} />
+            </Placeholder>
+          <Placeholder as={Card.Footer} animation="glow">
+              <Placeholder xs={3} />
+            </Placeholder>
+          </Card.Body>
+  
+          <Card.Body>
+            <div className='d-flex my-3 p-3'>
+              <div className='me-auto'>
+                <Card.Img src={BlankImage} style={{ width: '32px' }} /> 
+              </div>
+              <div className='d-flex'>
+                <Placeholder.Button variant="success" xs={6} style={{ width: '60px', height: '20px' }} />
+              </div>
+            </div>
+            <Placeholder as={Card.Title} animation="glow">
+              <Placeholder xs={6} />
+            </Placeholder>
+            <Placeholder as={Card.Text} animation="glow">
+              <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+              <Placeholder xs={6} /> <Placeholder xs={8} />
+            </Placeholder>
+          <Placeholder as={Card.Footer} animation="glow">
+              <Placeholder xs={3} />
+            </Placeholder>
+          </Card.Body>
+  
+          <Card.Body>
+            <div className='d-flex my-3 p-3'>
+              <div className='me-auto'>
+                <Card.Img src={BlankImage} style={{ width: '32px' }} /> 
+              </div>
+              <div className='d-flex'>
+                <Placeholder.Button variant="success" xs={6} style={{ width: '60px', height: '20px' }} />
+              </div>
+            </div>
+            <Placeholder as={Card.Title} animation="glow">
+              <Placeholder xs={6} />
+            </Placeholder>
+            <Placeholder as={Card.Text} animation="glow">
+              <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+              <Placeholder xs={6} /> <Placeholder xs={8} />
+            </Placeholder>
+          <Placeholder as={Card.Footer} animation="glow">
+              <Placeholder xs={3} />
+            </Placeholder>
+          </Card.Body>
+        </Card>
+      )
+    }
 
     return (
-        <div className="card my-3 p-3 bg-body rounded shadow-sm">
-            <div className="pb-3 mb-0 small lh-sm border-bottom">
-                <dd className="card-text fs-4">{posts.post_description}</dd>
-                <div className="row mb-3 bg-body rounded shadow-sm">
-                    {posts.pictures.map ( (pics, post) => (
-                        <div key={post} className="col my-2 p-2 bg-body rounded shadow-sm">
-                            <img src={`http://localhost:8000/img/${pics}`} width="240px" height="240px" alt=""/>
-                        </div>
-                    ))}
-                </div>
+        <>
+        {
+            posts.map ( (post, index) => (
+            <div key={index}>
+                <Posts post={post} avatar={avatar} setDeleteReloadPosts={setDeleteReloadPosts} own_id={id}/>
             </div>
-                <time>{hour + date.substring(18, 21)} {meridiem} {date.substring(4, 10)}, {date.substring(11, 16)}</time>
-        </div>
+            
+        ))}
+        </>
+        // <Posts post={post} avatar={avatar} own_id={id}/>
     )
 }
 

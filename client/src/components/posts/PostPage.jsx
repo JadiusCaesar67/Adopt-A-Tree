@@ -1,7 +1,6 @@
 import React from 'react';
 import Posts from "./Posts";
-import Card from 'react-bootstrap/Card';
-import Placeholder from 'react-bootstrap/Placeholder';
+import { Card, Placeholder } from 'react-bootstrap';
 import BlankImage from '../../assets/blank-image.svg';
 
 const PostPage = ({ posts, loading, setDeleteReloadPosts, ownId }) => {

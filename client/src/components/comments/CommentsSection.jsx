@@ -59,10 +59,7 @@ const CommentSection = ({ postId, ownId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPosting(true);
-    console.time('blocking-await')
     try {
-      console.log(postId)
-      console.log(newComment)
       const response = await fetch(`http://localhost:8000/comments`, {
         method: "POST",
         headers: {
@@ -72,11 +69,9 @@ const CommentSection = ({ postId, ownId }) => {
         body: JSON.stringify({ postId: postId, text: newComment }),
       });
       const parsedResponse = await response.json();
-      console.log(parsedResponse)
       setComments([...comments, parsedResponse]);
       setIsPosting(false);
       setNewComment("");
-      console.timeEnd('blocking-await');
     } catch (error) {
       console.error(error);
     }
