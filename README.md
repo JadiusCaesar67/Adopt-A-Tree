@@ -89,33 +89,33 @@ Welcome to the Adopt-A-Tree project, a community social-media app designed to co
 ### Home Page
 The home page welcomes the user to the Adopt-A-Tree application. It has a call-to-action button that invites the user to register for an account. It also features a hero section with a background image of trees, and a slogan that promotes the app's purpose.
 
-![Home Page](./client/public/Adopt A Tree-HomePage.png)
+![Home Page](./client/public/HomePage.png)
 
 ### Login Page
 The login page has a form that allows the user to log in to their account. It has fields for email and password, as well as a "Remember me" checkbox. It also has a link that redirects the user to the registration page.
 
-![Login Page](./client/public/Adopt A Tree-LoginPage.png)
+![Login Page](./client/public/LoginPage.png)
 
 ### Registration Page
 The registration page has a form that allows the user to create a new account. It has fields for name, email, password. It also has and a link that redirects the user to the login page.
 
-![Registration Page](./client/public/Adopt A Tree-Registration.png)
+![Registration Page](./client/public/Registration.png)
 
 ### Timeline Page
 The timeline page is where users can see recent posts from other users. It has a post section where users can create new posts. Each post has a title, body, and an image upload button. 
 
-![Timeline Page](./client/public/Adopt A Tree-PostingSample.png)
-![Timeline Page](./client/public/Adopt A Tree-PostsSample.png)
+![Timeline Page](./client/public/PostingSample.png)
+![Timeline Page](./client/public/PostsSample.png)
 
 ### Profile Page
 The profile page displays and could edit the user's information, including their name, email, and profile picture. It also has a "Change Password" button that redirects the user to the password change page. There's also a "Delete Account" button that deletes the user's account. The user can also see a list of all the posts they've made on the right section.
 
-![Profile Page](./client/public/Adopt A Tree-ProfileSample.png)
-![Profile Page](./client/public/Adopt A Tree-ProfilePagEdit.png)
+![Profile Page](./client/public/ProfileSample.png)
+![Profile Page](./client/public/ProfilePagEdit.png)
 
 ### Messenger
 The messenger is where users can communicate with each other in real-time. It has a chat section where users can send and receive messages. The user can also see a list of all the conversations they've had on the left section.
 
-![Messenger Page](./client/public/Adopt A Tree-MessengerSample.png)
+![Messenger Page](./client/public/MessengerSample.png)
 
 Please feel free to reach out to me if you face any issues or have any questions about the project. We hope you enjoy using Adopt-A-Tree and contributing to a better environment!
