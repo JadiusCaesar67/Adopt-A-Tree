@@ -34,8 +34,6 @@ const Login = ({ setAuth, setShowLoginForm }) => {
         try {
             //for making the body object from the username and password
             const body = { username, password }
-            // console.log(body)
-            // console.log(JSON.stringify(body))
             //fetch api for POST method
             const response = await fetch(
                 "http://localhost:8000/login",
@@ -47,27 +45,22 @@ const Login = ({ setAuth, setShowLoginForm }) => {
                     body: JSON.stringify(body)
                 }
             )
-
             const parseRes = await response.json()
-            // console.log(parseRes)
                 
         if (parseRes.token) {
             //for in local storage
             setShowLoginForm(false)
             localStorage.setItem("token", parseRes.token)
             setAuth(true)
-            toast.success("Login Successful")
-        }
-        else {
+            toast.success(parseRes.message)
+        } else {
             setAuth(false)
-            toast.error(parseRes)
+            toast.error(parseRes.message)
             // console.log("Something went wrong or wrong credentials")
         }
-        }
-        catch (error) {
-            toast.error("Password or Username is Incorrect")
+        } catch (error) {
             console.error(error.message)
-            }
+        }
     }
 
 return (
@@ -86,7 +79,7 @@ return (
                     placeholder="name_123 or name@example.com"
                     value={username} 
                     onChange={e => onChange(e)} />
-                    <label className="form-label" htmlFor="form2Example1">Username</label>
+                    <label className="form-label" htmlFor="form2Example1">Username/Email</label>
                 </div>
 
 

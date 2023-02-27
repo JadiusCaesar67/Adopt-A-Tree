@@ -163,11 +163,11 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body
-        const user = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
+        const user = await pool.query(`SELECT * FROM users WHERE username = '${username}' OR email = '${username}'`)
         console.log("login attempt: ")
-        // console.log(user.rows)
+        // check if user exists
         if (user.rows.length === 0) {
-            res.send("User does not exist")
+            res.status(401).json({ message : "Username or Email does not exist" })
             console.log("failed; user don't exist")
         }
         else {
@@ -176,11 +176,11 @@ app.post('/login', async (req, res) => {
     
             if (!validPassword) {
                 console.log("failed; invalid username or password")
-                return res.status(401).json("Password or Username is Incorrect")
+                return res.status(401).json({ message : "Password is Incorrect" })
             }
     
             const token = generateJwt(user.rows[0])
-            res.json({ token })
+            res.json({ token, message : "Logged in successfully" })
             console.log("success")
         }
 
