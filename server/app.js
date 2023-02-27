@@ -122,33 +122,38 @@ app.get('/verify', auth, async (req, res) => {
 
 app.post('/register', async (req, res) => {
     try {
-        const { username, firstname, lastname, email, gender, address, password } = req.body
+        const { username, firstName, lastName, email, gender, address, password } = req.body
         console.log("registration attempt:")
-        //check if user or email exists
-        const user = await pool.query(`SELECT * FROM users WHERE username = '${username}' OR email = '${email}'`)
-        if (user.rows.length > 0) {
-            res.send("User already exists")
-            console.log("failed; user already exists")
+        //check if username exists
+        const checkExistingUsername = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
+        //check if email exists
+        const checkExistingEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`)
+        if (checkExistingUsername.rows.length > 0) {
+            res.status(406).json({ message : "Username already exists" })
+            console.log("failed; username already exists")
+        } else if (checkExistingEmail.rows.length > 0) {
+            res.status(406).json({ message : "Email already exists" })
+            console.log("failed; Email already exists")
+        } else {
+            // setup bcrypt
+            const saltRound = 10
+            const salt = await bcrypt.genSalt(saltRound)
+    
+            const bcryptPassword = await bcrypt.hash(password, salt)
+    
+            console.log("password encrypted")
+    
+            //add new user to the database
+            const newUser = await pool.query(`
+            INSERT INTO users (username, first_name, last_name, email, gender, address, password)
+            VALUES ('${username}', '${firstName}', '${lastName}', '${email}', '${gender}', '${address}', '${bcryptPassword}') RETURNING *
+            `)
+    
+            const token = generateJwt(newUser.rows[0])
+    
+            console.log("Register Success")
+            res.status(201).json({ token, message:"Registration Successful!" })
         }
-        
-        //setup bcrypt
-        const saltRound = 10
-        const salt = await bcrypt.genSalt(saltRound)
- 
-        const bcryptPassword = await bcrypt.hash(password, salt)
- 
-        console.log("password encrypted")
- 
-        //add new user to the database
-        const newUser = await pool.query(`
-        INSERT INTO users (username, first_name, last_name, email, gender, address, password)
-        VALUES ('${username}', '${firstname}', '${lastname}', '${email}', '${gender}', '${address}', '${bcryptPassword}') RETURNING *
-        `)
- 
-        const token = generateJwt(newUser.rows[0])
- 
-        res.json({ token })
-        console.log("success")
  
     } catch (error) {
         res.json({ msg: error.message })

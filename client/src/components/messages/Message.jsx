@@ -27,7 +27,7 @@ export default function Message({ message, own }) {
     }
     getAvatar()
   }, [message, own])
-  console.log(avatar)
+  // console.log(avatar)
   return (
     <div className={own ? "message own" : "message"}>
         {

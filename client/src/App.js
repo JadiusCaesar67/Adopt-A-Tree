@@ -13,7 +13,7 @@ import {
 } from "react-router-dom"
 import Test from './components/Nothing';
 import Home from './pages/home/Home'; 
-import Registration from './components/authentication/Register';
+import Registration from './components/authentication/Registration';
 import Login from './components/authentication/Login';
 import Profile from './pages/profile/Profile';
 import Messenger from "./pages/messenger/Messenger";

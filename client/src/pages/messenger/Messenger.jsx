@@ -121,11 +121,11 @@ const getProfile = async () => {
         console.log(err.message);
       }
     };
-    // const interval = setInterval(() => {
-    //   getMessages()
-    // }, 1000);
-    // return () => clearInterval(interval);
-    getMessages();
+    const interval = setInterval(() => {
+      getMessages()
+    }, 1000);
+    return () => clearInterval(interval);
+    // getMessages();
   }, [currentChat]);
 
   const handleSubmit = async (e) => {

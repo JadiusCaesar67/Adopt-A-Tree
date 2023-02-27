@@ -16,7 +16,6 @@ const CommentSection = ({ postId, ownId }) => {
   const [deleteReloadComments, setDeleteReloadComments] = useState(false)
   const [limit, setLimit] = useState(1);
   // console.log(comments)
-
     
   useEffect(() => {
     const fetchComments = async () => {
@@ -147,8 +146,6 @@ const CommentSection = ({ postId, ownId }) => {
             </Form.Group>
           </Form>
           )}
-    
-      
     </>
   );
 };
