@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import CommentSection from "../comments/CommentsSection";
-import { Modal, Button, Spinner } 
-  from 'react-bootstrap';
+import { Modal, Button, Spinner } from 'react-bootstrap';
+import AvatarInPost from "./AvatarInPost";
 
 const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
     const [postContent, setPostContent] = useState(post.post_description);
     // const [editedPost, setEditedPost] = useState([])
-    const [profilePic, setProfilePic] = useState(post.avatar);
+    const [profilePic, setProfilePic] = useState("https://secure.gravatar.com/avatar/36e59b2d168a96ba0d0046b45fb0fa5f?s=500&d=mm&r=g");
     const [loading, setLoading] = useState(false);
     const [ownId, setOwnId] = useState(own_id);
     const [available, setAvailable] = useState(post.available);
@@ -85,8 +85,6 @@ const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
     //Availability
     useEffect(() => {
         const setOwnAvailability = async () => {
-            // console.log(post.post_id)
-            // console.log(available)
             try {
                 const response = await fetch(
                     "http://localhost:8000/posts/available?post_id=" + post.post_id,
@@ -165,10 +163,17 @@ const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
     return(
         <>
         <div className="card-body">
-        <div className="modal-header">
-        <img src={profilePic} 
-            alt="" className="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" focusable="false"
-        />
+        <div className="modal-header d-flex align-items-center">
+            <AvatarInPost 
+                profilePic={profilePic} 
+                userId={post.user_id}
+                username={post.username} 
+                email={post.email} 
+                ownId={own_id}
+                />
+            <div className="mb-0 mt-n4 flex-grow-1" style={{ marginTop: -15, paddingTop: 0 }}>
+                <strong className="d-block text-gray-dark fw-bold username">{post.username}</strong>
+            </div>
         {
             !own_id? (
                 (available? <div className="card d-flex text-bg-success">Available</div> :
@@ -230,10 +235,10 @@ const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
             <Modal.Footer>
                 <h3>Are you sure, do you want to delete this post?</h3>
                 <Button variant="danger" onClick={deletePost} className="ms-2">
-                    Sure!
+                    Confirm
                 </Button>
                 <Button variant="secondary" onClick={onClickCancel}>
-                    No
+                    Cancel
                 </Button>
             </Modal.Footer>
                 )
@@ -241,7 +246,7 @@ const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
         </Modal>
         
         </div>
-        {
+        {/* {
             ownId !== post.user_id &&
             <button 
                 type="button" 
@@ -249,9 +254,9 @@ const Posts = ({ post, avatar, setDeleteReloadPosts, own_id }) => {
                 onClick={onClickMessage}
             >Message
             </button>
-        }
+        } */}
     
-        <strong className="d-block text-gray-dark fw-bold">{post.username}</strong>
+        
         <div className="pb-3 mb-0 small lh-sm border-bottom">
             {
                 isEditing? 

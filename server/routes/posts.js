@@ -127,7 +127,7 @@ router.get('/', async (req, res) => {
         // const newinfo = req.user.id
         // console.log(newinfo)
         const posts = await pool.query(`
-            SELECT posts.*, users.username, avatars.avatar 
+            SELECT posts.*, users.username, users.email, avatars.avatar 
             FROM posts 
             INNER JOIN users ON posts.user_id = users.id
             LEFT JOIN avatars ON users.id = avatars.user_id
