@@ -1,4 +1,4 @@
-.buttons{
+/* .buttons{
     color: rgb(255, 255, 255) !important;
     font-size: 35px !important;
     padding: 5px 20px !important;
@@ -13,4 +13,35 @@
     padding: 5px 20px !important;
     transition: 0.6s ease;
     text-decoration: none;
+} */
+
+.username:hover {
+  cursor: default;
+  text-decoration: underline;
 }
+
+.profile-pic {
+    transition: all 0.3s ease-in-out;
+}
+
+.profile-pic:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.popover {
+    max-width: unset;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .popover-body {
+    padding: 0;
+  }
+  
+  .popover .popover-body button {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }

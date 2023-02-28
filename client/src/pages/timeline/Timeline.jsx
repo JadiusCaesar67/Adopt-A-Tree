@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PostPage from "../../components/posts/PostPage";
 import { toast } from 'react-toastify';
+import "./timeline.css";
+import { Modal, Button, Form } from "react-bootstrap";
 // import Pagination from "../../components/posts/Pagination";
 
 const Timeline = ({ id, showLogin, isAuthenticated }) => {
-    console.log(id, isAuthenticated)
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState(false);
     const [inputs, setInputs] = useState({
@@ -21,7 +22,9 @@ const Timeline = ({ id, showLogin, isAuthenticated }) => {
     // const [postsPerPage] = useState(5)
     const [isPosting, setIsPosting] = useState(false)
     const [deleteReloadPosts, setDeleteReloadPosts] = useState(false)
-    const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated)
+    const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated)  
+    const [showPostModal, setShowPostModal] = useState(false);
+    const [sureConfirmationDiscardModal, setConfirmationDiscardModal] = useState(false)
     //setting the inputs
     const onChange = e => {//post_type     : post   
         setInputs({ ...inputs, [e.target.name]: e.target.value })
@@ -108,6 +111,10 @@ const Timeline = ({ id, showLogin, isAuthenticated }) => {
             console.error(error.message)
         }
     }
+    
+    //Handle Showing of Modal Post
+    const handleClosePostModal = () => setShowPostModal(false);
+    const handleShowPostModal = () => setShowPostModal(true);
 
     const getPosts = async () => {
         try {
@@ -156,118 +163,120 @@ const Timeline = ({ id, showLogin, isAuthenticated }) => {
         <h1>Posts</h1>
         {
             isLoggedIn ? 
-            <button type="button" id="button_post" className="buttons btn btn-success" data-bs-toggle="modal" data-bs-target="#modal">
+            <Button className="buttons btn btn-success" variant="primary" onClick={handleShowPostModal}>
             Post Something
-            </button> : <><Link onClick={showLogin}>Login</Link> or <Link to="/register">Register</Link> to Post Here</>
+            </Button> : <><Link onClick={showLogin}>Login</Link> or <Link to="/register">Register</Link> to Post Here</>
         }
         {/* Posting in Modal */}
-        <div className="modal fade" id="modal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
-            <div className="modal-content">
-            <form onSubmit={onSubmitForm}>
-            <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">Post Something</h1>
-                {((inputs.tree_name || inputs.treeDescription || inputs.note || imageDiscard) === "")?
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                :
-                <button type="button" className="btn-close" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-dismiss="modal" aria-label="Close"></button>
-                }
-            </div>
-            <div className="modal-body">
-            
-                <div className="form-floating mb-4">
-                    <input
-                        
-                        type="text"
-                        id="tree_content"
-                        name="tree_name"
-                        className="form-control"
-                        placeholder="Optional"
-                        value={tree_name}
-                        onChange={e => onChange(e)} />
-                    <label className="form-label" htmlFor="form2Example1">Tree Name</label>
-                </div>
-                <div className="form-floating mb-4">
-                    <input
-                        type="text"
-                        id="treeDescription"
-                        name="treeDescription"
-                        placeholder="Optional"
-                        className="form-control"
-                        value={treeDescription}
-                        onChange={e => onChange(e)} />
-                    <label className="form-label" htmlFor="form2Example1">Tree Description</label>
-                </div>
-                <div className="form-floating mb-4">
-                    <textarea
-                        style={{ resize : "none" }}
-                        required
-                        type="text"
-                        id="caption"
-                        name="note"
-                        placeholder="Required"
-                        className="form-control"
-                        value={note}
-                        onChange={e => onChange(e)} />
-                    <label className="form-label" htmlFor="form2Example1">Note/Caption</label>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="formFileMultiple" className="form-label">Upload Image/s</label>
-                    <input className="form-control" type="file" id="formFileMultiple" multiple onChange={(e) => fileOnChange(e.target.files)} />
-                </div>
-                {/* <button type="submit" className="btn btn-primary btn-block mb-4">Post</button> */}
-      </div>
-      <div className="modal-footer">
-        {
-            ( inputs.note || inputs.tree_name || inputs.treeDescription || imageDiscard) !== ""? 
-            (
+        <Modal show={showPostModal} onHide={handleClosePostModal}>
+            <Form onSubmit={onSubmitForm}>
+            <Modal.Header>
+                <Modal.Title>Post Something</Modal.Title>
+                {((inputs.tree_name || inputs.treeDescription || inputs.note || imageDiscard) === "") ? (
+                <Button className="btn-close" onClick={handleClosePostModal}></Button>
+                ) : (
+                <Button className="btn-close" onClick={() => setConfirmationDiscardModal(true)}></Button>
+                )}
+            </Modal.Header>
+            <Modal.Body>
+                <Form.Group className="mb-4" controlId="tree_content">
+                <Form.Label>Tree Name</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="tree_name"
+                    placeholder="Required"
+                    value={inputs.tree_name}
+                    onChange={onChange}
+                />
+                </Form.Group>
+                <Form.Group className="mb-4" controlId="treeDescription">
+                <Form.Label>Tree Description</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="treeDescription"
+                    placeholder="Optional"
+                    value={inputs.treeDescription}
+                    onChange={onChange}
+                />
+                </Form.Group>
+                <Form.Group className="mb-4" controlId="caption">
+                <Form.Label>Note/Caption</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    style={{ resize: "none" }}
+                    required
+                    name="note"
+                    placeholder="Required"
+                    value={inputs.note}
+                    onChange={onChange}
+                />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formFileMultiple">
+                <Form.Label>Upload Image/s</Form.Label>
+                <Form.Control type="file" multiple onChange={(e) => fileOnChange(e.target.files)} />
+                </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+                {(inputs.note || inputs.tree_name || inputs.treeDescription || imageDiscard) !== "" ? (
                 <>
-                <button type="reset" className="btn btn-secondary" onClick={handleDiscard}>Clear Changes</button>
-                {
-                    inputs.tree_name && inputs.note  !== ""? 
-                    <>
-                    {   
-                        isPosting? 
-                        <button className="btn btn-success" type="button" disabled>
-                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                Loading...
-                        </button> : 
-                      <button type="submit" className="btn btn-success">Post</button> 
-                    }
-                    </>
-                    :
-                    <button type="submit" className="btn btn-secondary" disabled>Post</button>
-                }
-                </> 
-            ) 
-            : 
-            (
-                <>
-                <button type="reset" className="btn btn-outline-secondary" disabled>Clear Changes</button>
-                <button type="submit" className="btn btn-secondary" disabled>Post</button>
+                    <Button variant="secondary" onClick={handleDiscard}>
+                    Clear Changes
+                    </Button>
+                    {inputs.tree_name && inputs.note !== "" ? (
+                    isPosting ? (
+                        <Button variant="success" disabled>
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                        </Button>
+                    ) : (
+                        <Button type="submit" variant="success">
+                        Post
+                        </Button>
+                    )
+                    ) : (
+                    <Button variant="secondary" disabled>
+                        Post
+                    </Button>
+                    )}
                 </>
-            )
-        }
-        {/* <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Post It</button>  */}
-      </div>
-      </form>
-    </div>
-  </div>
-        </div>
+                ) : (
+                <>
+                    <Button variant="outline-secondary" disabled>
+                    Clear Changes
+                    </Button>
+                    <Button variant="secondary" disabled>
+                    Post
+                    </Button>
+                </>
+                )}
+            </Modal.Footer>
+        </Form>
+      </Modal>
         {/* <!-- Are you sure you want to dicard image? Modal --> */}
-        <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div className="modal-dialog">
-            <div className="modal-content">
-            <div className="modal-body">
-                <h2>Are you sure you want to exit and discard changes?</h2>
-            </div>
-            <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal">No</button>
-                <button type="reset" id="discard" className="btn btn-danger" data-bs-dismiss="modal" onClick={handleDiscard}>Discard Changes</button>
-            </div>
-            </div>
-        </div>
-        </div>
+        <Modal
+            show={sureConfirmationDiscardModal}
+            onHide={() => setConfirmationDiscardModal(true)}
+            backdrop="static"
+            keyboard={false}
+            >
+            <Modal.Header closeButton>
+                <Modal.Title>Are you sure you want to exit and discard changes?</Modal.Title>
+            </Modal.Header>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setConfirmationDiscardModal(false)}>Cancel</Button>
+                <Button 
+                variant="danger" 
+                onClick={() => {handleDiscard(); setConfirmationDiscardModal(false); setShowPostModal(false)}}
+                >
+                    Discard
+                </Button>
+            </Modal.Footer>
+        </Modal>
+
+
+
+
+
             </div>
 
             <div className="my-3 p-3 bg-body rounded shadow-sm">
