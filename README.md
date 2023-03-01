@@ -40,18 +40,18 @@ Welcome to the Adopt-A-Tree project, a community social-media app designed to co
 2. Open in Visual Studio
 3. Install the dependencies for the server:
     - Open Terminal and navigate to the server directory.
-    - Type `npm init` and press enter until completed.
-    - Type `npm install` to install the dependencies.
+    - Type `npm install` to install the dependencies automatically.
 4. Create a local Database
     - Open SQL shell.
     - Login to your database.
     - Open the 'database.sql' file.
-    - Copy and paste 'CREATE DATABASE capstone;' into the command line of SQL shell. (note: you can change "capstone" to anything you want)
-    - After creating the database, type \c capstone (or your custom name of the database) into the command line.
-    - Individually copy all the CREATE TABLE statements from the 'database.sql' file into the command line to create your tables.
+    - Copy and paste `CREATE DATABASE capstone;` into the command line of SQL shell. (note: you can change "capstone" to anything you want)
+    - After creating the database, type `\c capstone` (or your custom name of the database `\c <your_custom_database_name>` without the `< >`) into the command line.
+    - Execute commands from file by typing `\i <...path to file/database.sql>`. Note that when executing this command in Windows, single quotes should be added like this `\i '<...path to file/database.sql>'`
+    - (Optional, if the step before this doesn't work) Individually copy all the CREATE TABLE statements from the 'database.sql' file into the command line to create your tables.
 
-5. Conneting the Database and the Server
-    - Create a 'db.js' file
+5. Connecting the Database and the Server
+    - Create a 'db.js' file in the server folder
     - Copy and paste the following into your 'db.js' file:
     ```js
     import  pg  from  "pg"
@@ -80,9 +80,10 @@ Welcome to the Adopt-A-Tree project, a community social-media app designed to co
     - Open a new terminal.
     - Navigate to the server directory.
     - Type `npm start`.
-    - Open a new terminal.
+    - Open another new terminal.
     - Navigate to the client directory.
     - Type `npm start`.
+    - Wait until the client automatically redirects you to your current web browser.
 
 ## Design
 
@@ -114,8 +115,10 @@ The profile page displays and could edit the user's information, including their
 ![Profile Page](./client/public/ProfilePagEdit.png)
 
 ### Messenger
-The messenger is where users can communicate with each other in real-time. It has a chat section where users can send and receive messages. The user can also see a list of all the conversations they've had on the left section.
+The messenger is where users can communicate with each other in real-time. It has a chat section where users can send and receive messages. The user can also see a list of all the conversations they've had on the left section. (Known Issue: Messenger is not implemented in real time yet)
 
 ![Messenger Page](./client/public/MessengerSample.png)
 
 Please feel free to reach out to me if you face any issues or have any questions about the project. We hope you enjoy using Adopt-A-Tree and contributing to a better environment!
+
+
