@@ -51,8 +51,8 @@ Welcome to the Adopt-A-Tree project, a community social-media app designed to co
     - (Optional, if the step before this doesn't work) Individually copy all the CREATE TABLE statements from the 'database.sql' file into the command line to create your tables.
 
 5. Connecting the Database and the Server
-    - Create a 'db.js' file in the server folder
-    - Copy and paste the following into your 'db.js' file:
+    - Create a 'pool.js' file in the server folder
+    - Copy and paste the following into your 'pool.js' file:
     ```js
     import  pg  from  "pg"
     function  connectDatabase(){
