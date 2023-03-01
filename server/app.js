@@ -1,8 +1,8 @@
 import { connectDatabase } from  "./pool.js";
 import  bodyParser  from  "body-parser";
-import  express from  "express"
-import  bcrypt  from  "bcryptjs"
-import { auth } from  "./middleware/auth.js"
+import  express from  "express";
+import  bcrypt  from  "bcryptjs";
+import { auth } from  "./middleware/auth.js";
 import { generateJwt } from "./jwt/jwtGenerator.js";
 import cors from "cors";
 // import { createServer } from "http";
@@ -15,16 +15,16 @@ import photosRoute from "./routes/photos.js";
 import postsRoute from "./routes/posts.js";
 import commentsRoute from "./routes/comments.js";
 
-const  pool = connectDatabase()
-const  app = express()
-const  PORT = 8000
+const  pool = connectDatabase();
+const  app = express();
+const  PORT = 8000;
 // const server = createServer(app);
 
-//static
-app.use(express.json())
-app.use(bodyParser.urlencoded({ extended:  true }))
-app.use(cors())
-app.use('/img', express.static('public/images')) 
+//Some MiddleWares
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended:  true }));
+app.use(cors());
+app.use('/img', express.static('public/images')) ;
 
 //socket io server
 // const io = new Server(5000, {
@@ -33,7 +33,7 @@ app.use('/img', express.static('public/images'))
 //     },
 //   });
 
-let users = [];
+// let users = [];
 
 // const addUser = (userId, socketId) => {
 //         !users.some((user) => user.userId === userId) &&
@@ -90,7 +90,7 @@ let users = [];
   
     // // Leave the room if the user closes the socket
     // socket.on("disconnect", () => {
-    // console.log(`Client ${socket.id} diconnected`)
+    // console.log(`Client ${socket.id} disconnected`)
     //   socket.leave(roomId);
     // });
 
@@ -122,73 +122,72 @@ app.get('/verify', auth, async (req, res) => {
 
 app.post('/register', async (req, res) => {
     try {
-        const { username, firstName, lastName, email, gender, address, password } = req.body
-        console.log("registration attempt:")
+        const { username, firstName, lastName, email, gender, address, password } = req.body;
+        console.log("registration attempt:");
         //check if username exists
-        const checkExistingUsername = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
+        const checkExistingUsername = await pool.query(`SELECT * FROM users WHERE username = '${username}'`);
         //check if email exists
-        const checkExistingEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`)
+        const checkExistingEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`);
         if (checkExistingUsername.rows.length > 0) {
-            res.status(406).json({ message : "Username already exists" })
-            console.log("failed; username already exists")
+            res.status(406).json({ message : "Username already exists" });
+            console.log("failed; username already exists");
         } else if (checkExistingEmail.rows.length > 0) {
-            res.status(406).json({ message : "Email already exists" })
-            console.log("failed; Email already exists")
+            res.status(406).json({ message : "Email already exists" });
+            console.log("failed; Email already exists");
         } else {
             // setup bcrypt
-            const saltRound = 10
-            const salt = await bcrypt.genSalt(saltRound)
+            const saltRound = 10;
+            const salt = await bcrypt.genSalt(saltRound);
     
-            const bcryptPassword = await bcrypt.hash(password, salt)
+            const bcryptPassword = await bcrypt.hash(password, salt);
     
-            console.log("password encrypted")
+            console.log("password encrypted");
     
             //add new user to the database
             const newUser = await pool.query(`
             INSERT INTO users (username, first_name, last_name, email, gender, address, password)
             VALUES ('${username}', '${firstName}', '${lastName}', '${email}', '${gender}', '${address}', '${bcryptPassword}') RETURNING *
-            `)
+            `);
     
-            const token = generateJwt(newUser.rows[0])
+            const token = generateJwt(newUser.rows[0]);
     
-            console.log("Register Success")
-            res.status(201).json({ token, message:"Registration Successful!" })
+            console.log("Register Success");
+            res.status(201).json({ token, message:"Registration Successful!" });
         }
  
     } catch (error) {
-        res.json({ msg: error.message })
+        res.json({ msg: error.message });
     }
 })
  
 app.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body
-        const user = await pool.query(`SELECT * FROM users WHERE username = '${username}' OR email = '${username}'`)
-        console.log("login attempt: ")
+        const { username, password } = req.body;
+        const user = await pool.query(`SELECT * FROM users WHERE username = '${username}' OR email = '${username}'`);
+        console.log("login attempt: ");
         // check if user exists
         if (user.rows.length === 0) {
-            res.status(401).json({ message : "Username or Email does not exist" })
-            console.log("failed; user don't exist")
+            res.status(401).json({ message : "Username or Email does not exist" });
+            console.log("failed; user don't exist");
         }
         else {
             //check the validity of password
-            const validPassword = await bcrypt.compare(password, user.rows[0].password)
+            const validPassword = await bcrypt.compare(password, user.rows[0].password);
     
             if (!validPassword) {
-                console.log("failed; invalid username or password")
-                return res.status(401).json({ message : "Password is Incorrect" })
+                console.log("failed; invalid username or password");
+                return res.status(401).json({ message : "Password is Incorrect" });
             }
     
-            const token = generateJwt(user.rows[0])
-            res.json({ token, message : "Logged in successfully" })
-            console.log("success")
+            const token = generateJwt(user.rows[0]);
+            res.json({ token, message : "Logged in successfully" });
+            console.log("success");
         }
 
     } catch (error) {
-        res.json({ msg: error.message })
+        res.json({ msg: error.message });
     }
 })
-
 
 // server.listen(5000, () => {
 //     console.log('Server io listening on http://localhost:5000');
@@ -196,11 +195,11 @@ app.post('/login', async (req, res) => {
 
 pool.connect((err) => {
 	if (err) {
-		console.log(err)
+		console.log(err);
 	}
 	else {
 		app.listen(PORT, () => {
-			console.log(`Server has started on http://localhost:${PORT}`)
+			console.log(`Server has started on http://localhost:${PORT}`);
 		})
 	}
-})
+});
