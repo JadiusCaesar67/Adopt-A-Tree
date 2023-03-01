@@ -1,6 +1,11 @@
-pool.js
-.env
+# dependencies
+package-lock.json
 /node_modules
+
+# testing
 test.js
 index_test.js
+
+# misc
+pool.js
 .env
