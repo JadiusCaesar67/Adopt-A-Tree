@@ -67,35 +67,35 @@ router.delete('/delete', auth, async (req, res) => {
     try {
         let photos;
         const userId = req.user.id;
-        const checkExisitngAvatar = await pool.query(`SELECT avatar FROM avatars WHERE user_id = '${userId}'`)
-        if (checkExisitngAvatar.rows.length !== 0) {
-            photos = checkExisitngAvatar.rows[0].avatar
+        const checkExistingAvatar = await pool.query(`SELECT avatar FROM avatars WHERE user_id = '${userId}'`);
+        if (checkExistingAvatar.rows.length !== 0) {
+            photos = checkExistingAvatar.rows[0].avatar;
             if (existsSync(`./public/images/${photos}`)) {
-                unlinkSync(`./public/images/${checkExisitngAvatar.rows[0].avatar}`);
-                console.log(photos, "REMOVED");
+                unlinkSync(`./public/images/${checkExistingAvatar.rows[0].avatar}`);
+                console.log(photos, "AVATAR REMOVED");
             }
         }
 
-        const checkExisitngPosts = await pool.query(`SELECT * FROM posts WHERE user_id = '${userId}'`)
-        if (checkExisitngPosts.rows.length !== 0) {
-            const checkExistingPhotos = await pool.query(`SELECT pictures FROM posts WHERE user_id = '${userId}'`)
-            photos = checkExistingPhotos.rows[0].pictures
+        const checkExistingPosts = await pool.query(`SELECT * FROM posts WHERE user_id = '${userId}'`);
+        if (checkExistingPosts.rows.length !== 0) {
+            const checkExistingPhotos = await pool.query(`SELECT pictures FROM posts WHERE user_id = '${userId}'`);
+            photos = checkExistingPhotos.rows[0].pictures;
             for (var i = 0; i < photos.length; i++) {
-                // console.log(photos[i])
                 if (existsSync(`./public/images/${photos[i]}`)) {
                     unlinkSync(`./public/images/${photos[i]}`);
-                    console.log(photos[i], "REMOVED");
+                    console.log(photos[i], "PHOTOS REMOVED");
                 }
             }
         }
-        const deletAccount = await pool.query(`
+        const deleteAccount = await pool.query(`
             DELETE FROM users 
             WHERE id = '${userId}'
-        `)
-        console.log("ACCOUNT DELETED!!!")
-        res.json(deletAccount)
+            RETURNING *
+        `);
+        console.log(`ACCOUNT ${deleteAccount.rows[0].username} HAS BEEN DELETED!!!`);
+        res.status(410).json({ data : deleteAccount.rows[0], message: "Account Successfully Deleted" });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
     }
 })
 

@@ -12,13 +12,13 @@ const Profile = ({ setAuth }) => {
     const [showEditForm, setShowEditForm] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [loadingAvatar, setloadingAvatar] = useState(false)
+    const [loadingAvatar, setLoadingAvatar] = useState(false)
     const [deleteReloadPosts, setDeleteReloadPosts] = useState(false)
     const navigate = useNavigate();
 
     const getProfile = async () => {
         try {
-            setloadingAvatar(true)
+            setLoadingAvatar(true)
             const response = await fetch(
                 "http://localhost:8000/profile", 
                 {
@@ -30,7 +30,7 @@ const Profile = ({ setAuth }) => {
             )
             const parseRes = await response.json()
             setUser(parseRes)
-            setloadingAvatar(false)
+            setLoadingAvatar(false)
         } catch (error) {
             console.error(error)
         }
@@ -99,21 +99,20 @@ const Profile = ({ setAuth }) => {
                             Authorization: "Bearer " + localStorage.getItem("token")
                           },
                     })
-                // const parsedResponse = await response.json()
-                // console.log(parsedResponse)
-                if (response.ok) {
-                    setIsDeleting(false);
-                    toast.error("Account Deleted")
+                const parsedResponse = await response.json()
+                if (parsedResponse) {
+                    toast.error(parsedResponse.message)
                     // Navigate to homepage
                     setTimeout(() => {
                         localStorage.removeItem('token');
                         setAuth(false);
+                        setIsDeleting(false);
                         navigate('/');
-                        window.location.reload(false);
-                    }, 1500);
+                        // window.location.reload(false);
+                    }, 500);
                 }
             } catch (error) {
-                console.error(error)
+                console.error(error.message)
             }
         }}
 

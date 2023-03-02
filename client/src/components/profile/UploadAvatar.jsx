@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Spinner } from 'react-bootstrap'
+import { Button, Spinner, ModalFooter } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 
-const UploadAvatar = ({ uploadingAvatar, setUploadingAvatar, setUpdatedAvatar }) => {
+const UploadAvatar = ({ handleUpdateAvatar, uploadingAvatar, setUploadingAvatar, setUpdatedAvatar }) => {
     const [image, setImage] = useState({})
     const [isUploading, setIsUploading] = useState(false)
 
@@ -25,8 +25,8 @@ const UploadAvatar = ({ uploadingAvatar, setUploadingAvatar, setUpdatedAvatar })
                 body: imageFile
             })
             const parseRes = await response.json();
-            toast.success("Avatar Uploaded Successfully")
-            setUpdatedAvatar(parseRes);
+            toast.success(parseRes.message)
+            setUpdatedAvatar(parseRes.avatar);
             setIsUploading(false);
             setUploadingAvatar(false);
         } catch (error) {
@@ -37,7 +37,7 @@ const UploadAvatar = ({ uploadingAvatar, setUploadingAvatar, setUpdatedAvatar })
 
     return (
         
-        <div>
+        <>
             {
                 uploadingAvatar && (
                     isUploading ? (
@@ -52,11 +52,15 @@ const UploadAvatar = ({ uploadingAvatar, setUploadingAvatar, setUpdatedAvatar })
                     </Button>
                     ) : (
                         <><input type="file" onChange={fileOnChange}></input>
-                        <button className="button-upload btn btn-outline-success" onClick={sendImage}>Upload Avatar</button></>
+                        <ModalFooter>
+                            <Button variant="secondary" onClick={handleUpdateAvatar}>Cancel</Button>
+                            <Button variant="outline-success" onClick={sendImage}>Upload Avatar</Button>
+                        </ModalFooter>
+                        </>
                     )
                 )
             }
-        </div>
+        </>
     )
 }
 

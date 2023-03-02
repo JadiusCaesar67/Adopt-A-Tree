@@ -15,12 +15,12 @@ const AvatarProfile = ({ avatar, loadingAvatar }) => {
             <>
             {
                 loadingAvatar? 
-                <svg className="object-fit-fill rounded-circle" width="18em" height="18em" xmlns="http://www.w3.org/2000/svg" 
+                <svg className="object-fit-fill rounded-circle avatar" width="18em" height="18em" xmlns="http://www.w3.org/2000/svg" 
                 role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
                 <rect width="18em" height="18em" fill="#868e96"></rect>
                 </svg>
                 :
-                <img src={profilePic} className="object-fit-fill rounded-circle" 
+                <img src={profilePic} className="object-fit-fill rounded-circle avatar" 
                 style={{ width: 18 + 'rem', height: 18 + 'rem' }} alt="..."></img>
             }
             </>

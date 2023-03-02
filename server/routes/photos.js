@@ -16,38 +16,33 @@ router.post('/avatar', auth, upload.single("avatar"), async (req, res) => {
 
         //checks if id exists already
         const image = await pool.query(`SELECT * FROM avatars WHERE user_id = '${id}'`)
-        // console.log(image.rows[0].avatar)
-        // console.log(image.rows[0])
+
         //if there is no user_id in the table
+        //the image will continue to upload regardless of the lost data to avoid server errors
+        let newImage
         if (image.rows.length === 0){
-            await pool.query(`
+            newImage = await pool.query(`
             INSERT INTO avatars (user_id, avatar) VALUES
             ( '${id}', '${filename}') RETURNING * `)
-            // res.json({ newPicture })
             console.log("Avatar upload success")
-            res.json(image.rows[0].avatar);
-        }
-        //If avatar exist on user
+        } //If avatar exist on user
         else if (image.rows[0].user_id === id) {
             if (existsSync(`./public/images/${image.rows[0].avatar}`)) {
                 unlinkSync(`./public/images/${image.rows[0].avatar}`);
                 console.log("File removed:", image.rows[0].avatar);
             }
-            await pool.query(`UPDATE avatars 
-            SET avatar = '${filename}' WHERE user_id = '${id}'`)
-            // res.send(`Updated Avatars '${filename}'`)
-            res.json(image.rows[0].avatar);
+            newImage = await pool.query(`UPDATE avatars 
+            SET avatar = '${filename}' WHERE user_id = '${id}' RETURNING * `)
             console.log("Updated Avatar")
-        }
-        
+        } //first avatar upload
         else {
-            await pool.query(`
+            newImage = await pool.query(`
             INSERT INTO avatars (user_id, avatar) VALUES
             ( '${id}', '${filename}') RETURNING * `)
             console.log("First avatar upload success")
-            res.json(image.rows[0].avatar);
         }
-        console.log(image.rows[0].avatar);
+        console.log(newImage.rows[0].avatar);
+        res.status(200).json({ avatar : newImage.rows[0].avatar, message : "Updated Avatar Successfully" });
     } catch (error) {
         console.error(error.message)
     }

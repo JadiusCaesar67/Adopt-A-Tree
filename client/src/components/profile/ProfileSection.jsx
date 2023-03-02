@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Stack, Modal, Spinner } from 'react-bootstrap';
+import { Button, Card, Stack, Modal, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 // import { ProfileInfo } from "./SubComponents.jsx";
 import EditProfileForm from "./EditProfileForm.jsx";
 import ChangePasswordForm from "./ChangePasswordForm.jsx";
@@ -20,7 +20,7 @@ const ProfileSection = ({
   useEffect(() => {
     setUpdatedAvatar(profile.avatar)
   }, [loadingAvatar])
-  
+
   const handleUpdateAvatar = () => {
     setUploadingAvatar(uploadingAvatar => !uploadingAvatar)
   }
@@ -54,10 +54,6 @@ const ProfileSection = ({
       {/* <CoverPhoto imageUrl={`http://localhost:8000/img/${user.avatar}`} /> */}
       {showEditForm && (
         <>
-        <UploadAvatar uploadingAvatar={uploadingAvatar} setUploadingAvatar={setUploadingAvatar} setUpdatedAvatar={setUpdatedAvatar}/>
-        <Button variant="primary" size="sm" className="mb-4" onClick={handleUpdateAvatar}>
-          Update Avatar
-        </Button>
         <EditProfileForm 
           user={profile} 
           onSave={handleUpdateProfile} 
@@ -74,7 +70,19 @@ const ProfileSection = ({
       {!showEditForm && !showChangePasswordForm && (
         <Card>
           <Card.Header>
-            <Avatar avatar={updatedAvatar} loadingAvatar={loadingAvatar}/>
+            <OverlayTrigger
+              trigger={['hover', 'focus']}
+              placement="top"
+              overlay={
+                <Tooltip>
+                  Click to upload & change avatar.
+                </Tooltip>
+              }
+              >
+                <div onClick={handleUpdateAvatar}>
+                  <Avatar avatar={updatedAvatar} loadingAvatar={loadingAvatar}/>
+                </div>
+            </OverlayTrigger>
             <h1 className="fw-bold mb-0 text-center">{profile.first_name} {profile.last_name}</h1>
           </Card.Header>
           <Card.Body>
@@ -90,6 +98,16 @@ const ProfileSection = ({
           </Card.Footer>
         </Card>
       )}
+
+      <Modal show={uploadingAvatar}>
+        <UploadAvatar 
+              handleUpdateAvatar={handleUpdateAvatar}
+              uploadingAvatar={uploadingAvatar} 
+              setUploadingAvatar={setUploadingAvatar} 
+              setUpdatedAvatar={setUpdatedAvatar} 
+              />
+      </Modal>
+
       <div className="header">
       <Stack gap={2} className="mt-3">
             {showEditForm && !showChangePasswordForm && (
